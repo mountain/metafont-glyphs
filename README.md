@@ -11,11 +11,11 @@ This repository contains a dataset of glyph images generated from random metafon
 <div>
 <img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/metafont-glyphs/main/demo/04.png" width="96px">
 <img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/metafont-glyphs/main/demo/05.png" width="96px">
-<img src="v/metafont-glyphs/main/demo/06.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/metafont-glyphs/main/demo/06.png" width="96px">
 </div>
 <div>
-<<img src="/https://raw.githubusercontent.com/mountain/metafont-glyphsmetafont-glyphs/main/demo/07.png" width="96px">
-<img src="/https://raw.githubusercontent.com/mountain/metafont-glyphsmetafont-glyphs/main/demo/08.png" width="96px">
-<img src="/https://raw.githubusercontent.com/mountain/metafont-glyphsmetafont-glyphs/main/demo/09.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/07.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/08.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/09.png" width="96px">
 </div>
 
