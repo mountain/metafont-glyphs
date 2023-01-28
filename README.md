@@ -106,7 +106,7 @@ Lines with negative coordinates are special
   * `-0.1666, +0.5750` means the xscale of the pen is 0.0575
   * `-0.5000, +0.2497` means the yscale of the pen is 0.02497
   * `-0.8333, +0.6750` means the rotation of the pen is 0.675 * 360 degrees, i.e. 243 degrees
-  * `-0.5000, -0.5000` means the pen is lifted up, i.e. the pen is not drawing and the end of the curve
+  * `-0.5000, -0.5000` means the pen is lifted up, i.e. the pen is not drawing and hence the end of the curve
 
 ## How to use
 
