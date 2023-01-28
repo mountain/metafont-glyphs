@@ -7,16 +7,31 @@ This repository contains a dataset of glyph images generated from random metafon
 <img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/01.png" width="96px">
 <img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/02.png" width="96px">
 <img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/03.png" width="96px">
-</div>
-<div>
 <img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/04.png" width="96px">
 <img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/05.png" width="96px">
 <img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/06.png" width="96px">
-</div>
-<div>
 <img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/07.png" width="96px">
 <img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/08.png" width="96px">
+</div>
+<div>
 <img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/09.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/10.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/11.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/12.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/13.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/14.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/15.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/16.png" width="96px">
+</div>
+<div>
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/17.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/18.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/19.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/20.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/21.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/22.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/23.png" width="96px">
+<img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/24.png" width="96px">
 </div>
 
 ## An example
