@@ -186,7 +186,7 @@ if __name__ == '__main__':
     parser.add_argument("count", help="the number of metafont files to generate",
                         type=int, default=50)
     parser.add_argument("-j", "--parallel", help="the number of parallel processes",
-                        action="store_true", type=int, default=8)
+                        type=int, default=8)
     args = parser.parse_args()
 
     if args.parallel > 1:
