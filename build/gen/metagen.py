@@ -175,7 +175,8 @@ def main(count=50):
                 mf, csv = gen_random_metafont(fname)
                 f.write(mf)
                 g.write(csv)
-    main(post_count)
+    if post_count > 0:
+        main(post_count)
 
 
 if __name__ == '__main__':
