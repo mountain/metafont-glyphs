@@ -80,7 +80,13 @@ def get_random_pen():
     x = r.random() * 0.06 + 0.02
     y = r.random() * 0.06 + 0.02
     a = r.randint(0, 360)
-    return '  pickup pencircle xscaled %0.2fw yscaled %0.2fw rotated %d;' % (x, y, a)
+    script = '  pickup pencircle xscaled %0.2fw yscaled %0.2fw rotated %d;' % (x, y, a)
+    vector = [
+        (-0.1666, x * 10),
+        (-0.5000, y * 10),
+        (-0.8333, a / 360),
+    ]
+    return script, vector
 
 
 def get_random_path(current_entropy):
@@ -113,10 +119,29 @@ def get_random_path(current_entropy):
         return current_entropy, '  draw %s;' % ts, zs
 
 
+def mf_repr(fname, path_scripts, zpoints):
+    paths = '\n'.join(path_scripts)
+    zpoints = sorted(list(set(zpoints)))
+    xpoints = [p.replace('z', 'x') for p in zpoints]
+    ypoints = [p.replace('z', 'y') for p in zpoints]
+    xdefs = '\n'.join(['  %s = %s * w / 10;' % (x, x[1]) for x in xpoints])
+    ydefs = '\n'.join(['  %s = %s * w / 10;' % (y, y[2]) for y in ypoints])
+
+    return tmpl % (fname, fname, xdefs, ydefs, paths)
+
+
+def csv_repr(vecs):
+    return '\n'.join(['%s, %s' % (x, y) for x, y in vecs])
+
+
 def gen_random_metafont(fname):
-    points = []
     lines = []
-    lines.append(get_random_pen())
+    points = []
+    vectors = []
+
+    pen_script, pen_vecs = get_random_pen()
+    lines.append(pen_script)
+    vectors.extend(pen_vecs)
 
     current_entropy = total_entropy
     current_entropy, nradical = get_random_nradical(current_entropy)
@@ -124,29 +149,29 @@ def gen_random_metafont(fname):
         entropy_by_radical = current_entropy / nradical
         entropy_by_part, npart = get_random_npart(entropy_by_radical)
         for jx in range(int(npart)):
-            entropy = entropy_by_part
-            entropy, path, path_points = get_random_path(entropy)
+            entropy = entropy_by_part / npart
+            entropy, path_script, path_points = get_random_path(entropy)
             points.extend(path_points)
-            lines.append(path)
 
-    paths = '\n'.join(lines)
-    points = sorted(list(set(points)))
-    xpoints = [p.replace('z', 'x') for p in points]
-    ypoints = [p.replace('z', 'y') for p in points]
+            path_vecs = [(float(z[1]) / 10, float(z[2]) / 10) for z in path_points] # points of path
+            path_vecs.append((-0.5000, -0.5000)) # end of path
+            vectors.extend(path_vecs)
 
-    xdefs = '\n'.join(['  %s = %s * w / 10;' % (x, x[1]) for x in xpoints])
-    ydefs = '\n'.join(['  %s = %s * w / 10;' % (y, y[2]) for y in ypoints])
+            lines.append(path_script)
 
-    return tmpl % (fname, fname, xdefs, ydefs, paths)
+    return mf_repr(fname, lines, points), csv_repr(vectors)
 
 
 def main():
-    for _ in range(100):
-        fname = ''.join(r.sample('abcdefghijklmnopqrstuvwxyz', 5))
+    for _ in range(50):
+        fname = ''.join(r.sample('abcdefghijklmnopqrstuvwxyzaeiouaeiou', 6))
         fpath = 'metafont/%s.mf' % fname
+        gpath = 'vector/%s.csv' % fname
         if not os.path.exists(fpath):
-            with open(fpath, 'w') as f:
-                f.write(gen_random_metafont(fname))
+            with open(fpath, 'w') as f, open(gpath, 'w') as g:
+                mf, csv = gen_random_metafont(fname)
+                f.write(mf)
+                g.write(csv)
 
 
 if __name__ == '__main__':
