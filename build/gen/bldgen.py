@@ -16,20 +16,9 @@ rule pdflatex
 rule convert
   command = convert -density 300 -trim -monochrome -white-threshold 50% -black-threshold 50% $in -quality 100 -gravity center -extent 96x96 -transparent white $out
 
-rule resize-huge
-  command = convert $in -resize 48x48 $out
+rule copy
+  command = cp $in $out
 
-rule resize-large
-  command = convert $in -resize 42x42 $out
-
-rule resize-normal
-  command = convert $in -resize 36x36 $out
-
-rule resize-small
-  command = convert $in -resize 30x30 $out
-
-rule resize-tiny
-  command = convert $in -resize 24x24 $out
 '''
 
 build = '''
@@ -38,6 +27,7 @@ build %s.600pk: gftopk %s.600gf
 build %s.tex: texgen %s.600pk
 build %s.pdf: pdflatex %s.tex
 build %s.png: convert %s.pdf
+build ../glyph/%s.png: copy %s.png
 '''
 
 parser = argparse.ArgumentParser()
