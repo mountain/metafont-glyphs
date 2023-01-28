@@ -162,16 +162,20 @@ def gen_random_metafont(fname):
     return mf_repr(fname, lines, points), csv_repr(vectors)
 
 
-def main():
-    for _ in range(50):
+def main(count=50):
+    post_count = 0
+    for _ in range(count):
         fname = ''.join(r.sample('abcdefghijklmnopqrstuvwxyzaeiouaeiou', 6))
         fpath = 'metafont/%s.mf' % fname
         gpath = 'vector/%s.csv' % fname
-        if not os.path.exists(fpath):
+        if os.path.exists(fpath):
+            post_count += 1
+        else:
             with open(fpath, 'w') as f, open(gpath, 'w') as g:
                 mf, csv = gen_random_metafont(fname)
                 f.write(mf)
                 g.write(csv)
+    main(post_count)
 
 
 if __name__ == '__main__':
