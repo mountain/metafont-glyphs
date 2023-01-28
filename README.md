@@ -2,6 +2,13 @@
 
 This repository contains a dataset of glyph images generated from random metafont scripts.
 
+We have many variant characters from ancient literature, such as oracle-bone inscriptions, bronze inscriptions etc.
+The main difficulty is that these characters are not standardized, and in order to digitize them, we need to collect a large number of glyph images,
+and then use machine learning to generate metafont scripts from glyph images.
+It is a different problem from OCR, which is focused on recognizing and transcribing written text from images.
+The goal is to develop models that can generate accurate geometric descriptions of these glyphs, 
+which can then be used in typesetting systems such as Metafont and Tex.
+
 ## gallery
 <div>
 <img src="https://raw.githubusercontent.com/mountain/metafont-glyphs/main/demo/01.png" width="96px">
