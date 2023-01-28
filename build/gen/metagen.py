@@ -180,5 +180,19 @@ def main(count=50):
 
 
 if __name__ == '__main__':
-    import sys
-    main(int(sys.argv[1]) if len(sys.argv) > 1 else 50)
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("count", help="the number of metafont files to generate",
+                        type=int, default=50)
+    parser.add_argument("-j", "--parallel", help="the number of parallel processes",
+                        action="store_true", type=int, default=8)
+    args = parser.parse_args()
+
+    if args.parallel > 1:
+        if not args.count // args.parallel * args.parallel == args.count:
+            print('Error! Count must be divisible by parallel')
+        else:
+            from multiprocessing import Pool
+            pool = Pool(args.parallel)
+            pool.map(main, [args.count // args.parallel] * args.parallel)
