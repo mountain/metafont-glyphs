@@ -146,10 +146,10 @@ def gen_random_metafont(fname):
     current_entropy = total_entropy
     current_entropy, nradical = get_random_nradical(current_entropy)
     for ix in range(int(nradical)):
-        entropy_by_radical = current_entropy / nradical
+        entropy_by_radical = current_entropy / nradical * (1 + (r.random() - 1) * 0.2)
         entropy_by_part, npart = get_random_npart(entropy_by_radical)
         for jx in range(int(npart)):
-            entropy = entropy_by_part / npart
+            entropy = entropy_by_part / npart * (1 + (r.random() - 1) * 0.2)
             entropy, path_script, path_points = get_random_path(entropy)
             points.extend(path_points)
 
