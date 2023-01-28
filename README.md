@@ -110,7 +110,7 @@ Lines with negative coordinates are special
 
 ## How to use
 
-### Install Texlive
+### Install texlive
 
 ```bash
 sudo apt install texlive-full # for Debian and Ubuntu
