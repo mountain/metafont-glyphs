@@ -165,7 +165,7 @@ def gen_random_metafont(fname):
 def main(count=50):
     post_count = 0
     for _ in range(count):
-        fname = ''.join(r.sample('abcdefghijklmnopqrstuvwxyzaeiouaeiou', 6))
+        fname = ''.join(r.sample('bcdfghjklmnpqrstvwxyz', 6))
         fpath = 'metafont/%s.mf' % fname
         gpath = 'vector/%s.csv' % fname
         if os.path.exists(fpath):
