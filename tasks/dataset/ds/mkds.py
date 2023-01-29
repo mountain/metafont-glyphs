@@ -30,16 +30,16 @@ table = pa.table({
     "vectors": pa.array(vectors[:1000], type=pa.list_(pa.float32())),
     "glyphs": pa.array(glyphs[:1000], type=pa.list_(pa.uint8(), 96 * 96))
 })
-pq.write_table(table, "validation.parquet")
+pq.write_table(table, "data/dataset/validation.parquet")
 
 table = pa.table({
     "vectors": pa.array(vectors[1000:4000], type=pa.list_(pa.float32())),
     "glyphs": pa.array(glyphs[1000:4000], type=pa.list_(pa.uint8(), 96 * 96))
 })
-pq.write_table(table, "test.parquet")
+pq.write_table(table, "data/dataset/test.parquet")
 
 table = pa.table({
     "vectors": pa.array(vectors[4000:], type=pa.list_(pa.float32())),
     "glyphs": pa.array(glyphs[4000:], type=pa.list_(pa.uint8(), 96 * 96))
 })
-pq.write_table(table, "train.parquet")
+pq.write_table(table, "data/dataset/train.parquet")

@@ -124,7 +124,7 @@ sudo apt install texlive-full # for Debian and Ubuntu
 brew install texlive # for macOS
 ```
 
-### Install python3, ninja and numpy
+### Install python3, ninja and imagemagick
 
 ```bash
 sudo apt install python3 # for Debian and Ubuntu
@@ -133,7 +133,7 @@ sudo apt install imagemagick # for Debian and Ubuntu
 brew install python3 # for macOS
 brew install ninja # for macOS
 brew install imagemagick # for macOS
-pip3 install numpy # for any platform
+pip3 install -r requirements.txt # for any platform
 ```
 
 ### Fire the tests

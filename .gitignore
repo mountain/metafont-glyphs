@@ -274,11 +274,14 @@ TSWLatexianTemp*
 # Makeindex log files
 *.lpz
 
+*.ninja
+
 .idea/
 temp/
-metafont/
-vector/
-glyph/
-*.ninja
+data/metafont/
+data/vector/
+data/glyph/
+data/dataset/
+data/model/
 
 

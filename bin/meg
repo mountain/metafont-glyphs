@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+
+import sys
+import subprocess
+
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: {} <subcommand>".format(sys.argv[0]))
+        print("dataset preparation subcommands:")
+        print("  * fontg: generate random metafont and vectors")
+        print("  * build: generate glyphs from metafont files")
+        print("  * clean: clean glyphs")
+        print("  * clean-all: clean all generated metafont files, vectors and glyphs")
+        sys.exit(1)
+
+    subcommand = sys.argv[1]
+    if subcommand == "fontg":
+        subprocess.check_output(["sh", "scripts/fontg.sh"])
+    elif subcommand == "build":
+        subprocess.check_output(["sh", "scripts/build.sh"])
+    elif subcommand == "clean":
+        subprocess.check_output(["sh", "scripts/clean.sh"])
+    elif subcommand == "clean-all":
+        subprocess.check_output(["sh", "scripts/clean-all.sh"])
+    else:
+        print("Unknown subcommand: {}".format(subcommand))
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
