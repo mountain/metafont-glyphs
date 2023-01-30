@@ -22,16 +22,16 @@ rule copy
 '''
 
 build = '''
-build %s.600gf: mf ../metafont/%s.mf
+build %s.600gf: mf ../../data/metafont/%s.mf
 build %s.600pk: gftopk %s.600gf
 build %s.tex: texgen %s.600pk
 build %s.pdf: pdflatex %s.tex
 build %s.png: convert %s.pdf
-build ../glyph/%s.png: copy %s.png
+build ../../data/glyph/%s.png: copy %s.png
 '''
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-d", "--build-directory", type=str, default='build', help="build directory")
+parser.add_argument("-d", "--build-directory", type=str, default='tasks/build', help="build directory")
 opt = parser.parse_args()
 
 
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     from glob import glob
 
     script = rules
-    for mffile in glob('metafont/*.mf'):
+    for mffile in glob('data/metafont/*/*/*.mf'):
         chname = pth.basename(mffile).replace('.mf', '')
         params = tuple([chname for _ in list(range(build.count('%s')))])
         content = build % params

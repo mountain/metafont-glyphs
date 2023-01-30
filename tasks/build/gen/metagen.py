@@ -166,8 +166,8 @@ def main(count=50):
     post_count = 0
     for _ in range(count):
         fname = ''.join(r.sample('bcdfghjklmnpqrstvwxyz', 6))
-        fpath = 'metafont/%s.mf' % fname
-        gpath = 'vector/%s.csv' % fname
+        fpath = 'data/metafont/%s/%s/%s.mf' % (fname[0], fname[1], fname)
+        gpath = 'data/vector/%s/%s/%s.csv' % (fname[0], fname[1], fname)
         if os.path.exists(fpath):
             post_count += 1
         else:
