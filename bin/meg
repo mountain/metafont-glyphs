@@ -16,13 +16,15 @@ def main():
 
     subcommand = sys.argv[1]
     if subcommand == "fontg":
-        subprocess.check_output(["sh", "scripts/fontg.sh"])
+        subprocess.run(["sh", "scripts/fontg.sh"] + sys.argv[2:], stderr=sys.stderr, stdout=sys.stdout)
     elif subcommand == "build":
-        subprocess.check_output(["sh", "scripts/build.sh"])
-    elif subcommand == "clean":
-        subprocess.check_output(["sh", "scripts/clean.sh"])
+        subprocess.run(["sh", "scripts/build.sh"] + sys.argv[2:], stderr=sys.stderr, stdout=sys.stdout)
+    #elif subcommand == "clean":
+    #    subprocess.run(["sh", "scripts/clean.sh"] + sys.argv[2:], stderr=sys.stderr, stdout=sys.stdout)
     elif subcommand == "clean-all":
-        subprocess.check_output(["sh", "scripts/clean-all.sh"])
+        subprocess.run(["sh", "scripts/clean-all.sh"] + sys.argv[2:], stderr=sys.stderr, stdout=sys.stdout)
+    elif subcommand == "mkds":
+        subprocess.run(["sh", "scripts/mkds.sh"] + sys.argv[2:], stderr=sys.stderr, stdout=sys.stdout)
     else:
         print("Unknown subcommand: {}".format(subcommand))
         sys.exit(1)

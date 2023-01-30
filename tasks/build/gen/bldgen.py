@@ -8,7 +8,7 @@ rule gftopk
   command = gftopk $in $out
 
 rule texgen
-  command = PYTHONPATH=../build python3 -m gen.texgen $in
+  command = PYTHONPATH=../../tasks/build python3 -m gen.texgen $in
 
 rule pdflatex
   command = pdflatex $in
@@ -22,12 +22,12 @@ rule copy
 '''
 
 build = '''
-build %s.600gf: mf ../../data/metafont/%s.mf
+build %s.600gf: mf ../../data/metafont/%s/%s/%s.mf
 build %s.600pk: gftopk %s.600gf
 build %s.tex: texgen %s.600pk
 build %s.pdf: pdflatex %s.tex
 build %s.png: convert %s.pdf
-build ../../data/glyph/%s.png: copy %s.png
+build ../../data/glyph/%s/%s/%s.png: copy %s.png
 '''
 
 parser = argparse.ArgumentParser()
@@ -42,8 +42,12 @@ if __name__ == '__main__':
     script = rules
     for mffile in glob('data/metafont/*/*/*.mf'):
         chname = pth.basename(mffile).replace('.mf', '')
-        params = tuple([chname for _ in list(range(build.count('%s')))])
-        content = build % params
+        params = list([chname for _ in list(range(build.count('%s')))])
+        params[1] = chname[0]
+        params[2] = chname[1]
+        params[-4] = chname[0]
+        params[-3] = chname[1]
+        content = build % tuple(params)
         script += content
 
     with open('%s/build.ninja' % opt.build_directory, 'w') as f:

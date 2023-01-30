@@ -168,9 +168,13 @@ def main(count=50):
         fname = ''.join(r.sample('bcdfghjklmnpqrstvwxyz', 6))
         fpath = 'data/metafont/%s/%s/%s.mf' % (fname[0], fname[1], fname)
         gpath = 'data/vector/%s/%s/%s.csv' % (fname[0], fname[1], fname)
+        hpath = 'data/glyph/%s/%s/%s.csv' % (fname[0], fname[1], fname)
         if os.path.exists(fpath):
             post_count += 1
         else:
+            os.makedirs(os.path.dirname(fpath), exist_ok=True)
+            os.makedirs(os.path.dirname(gpath), exist_ok=True)
+            os.makedirs(os.path.dirname(hpath), exist_ok=True)
             with open(fpath, 'w') as f, open(gpath, 'w') as g:
                 mf, csv = gen_random_metafont(fname)
                 f.write(mf)
@@ -191,7 +195,7 @@ if __name__ == '__main__':
 
     if args.parallel > 1:
         if not args.count // args.parallel * args.parallel == args.count:
-            print('Error! Count must be divisible by parallel')
+            raise ValueError('Error! Count must be divisible by parallel')
         else:
             from multiprocessing import Pool
             pool = Pool(args.parallel)
