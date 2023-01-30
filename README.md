@@ -154,8 +154,10 @@ cd metafont-glyphs
 bin/meg clean-all
 bin/meg fontg 100000
 bin/meg build
+bin/meg dsmk
 ```
 
+You should see three parquet files in the `data/dataset` folder.
 
 
 
