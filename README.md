@@ -141,10 +141,20 @@ pip3 install -r requirements.txt # for any platform
 ```bash
 git clone https://github.com/mountain/metafont-glyphs.git
 cd metafont-glyphs
-sh fontg.sh
-sh build.sh
+bin/meg fontg 48
+bin/meg build
 ```
 
+You should see the glyphs in the `data/glyph` folder.
+
+### Make dataset
+
+```bash
+cd metafont-glyphs
+bin/meg clean-all
+bin/meg fontg 100000
+bin/meg build
+```
 
 
 
