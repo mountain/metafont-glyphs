@@ -24,5 +24,4 @@ if __name__ == '__main__':
     import cv2
 
     img = point(0.7, 0.3, 0.01, 0.07, 1.0)
-    # make image transparence
     cv2.imwrite('test.png', (1 - img) * 255)
