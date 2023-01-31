@@ -1,6 +1,10 @@
+import numpy as np
 import pyarrow.parquet as pq
 
 from torch.utils.data import Dataset
+
+
+maxlen = 100
 
 
 class ParquetDataset(Dataset):
@@ -14,4 +18,11 @@ class ParquetDataset(Dataset):
         return self.table['glyphs'].shape[0]
 
     def __getitem__(self, index):
-        return self.table['glyphs'][index], self.table['vectors'][index]
+        glyphs = np.array(list(self.table['glyphs'][index]), dtype=np.float32)
+        vectors = np.array(list(self.table['vectors'][index]), dtype=np.float32)
+        leng = vectors.shape[0]
+        if leng < maxlen:
+            aligned = np.pad(vectors, (0, maxlen - leng), 'constant', constant_values=-1)
+        else:
+            aligned = vectors[:maxlen]
+        return glyphs, aligned
