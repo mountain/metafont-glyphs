@@ -3,7 +3,6 @@ import numpy as np
 import torch.nn as nn
 import pytorch_lightning as pl
 import data.dataset as ds
-import util.basemap as bm
 
 from abc import ABC
 from pytorch_lightning.utilities.types import TRAIN_DATALOADERS, EVAL_DATALOADERS
@@ -19,40 +18,12 @@ class AbstractNet(pl.LightningModule, ABC):
         super().__init__()
         self.lr = 0.02
 
-    def benchmark(self, predict, targets):
-        pprod, pylds = predict
-        tprod, tylds = targets
+    def make_plot(self, iname, ix, xs, ys):
+        yd = ys[0, 0, :, :]
+        glyph = yd.cpu().numpy().reshape((96, 96))
+        cv2.imwrit('outputs/%s-%d' % (iname, yr), glyph)
 
-        pttl = th.sum(pprod * country_area_weights, dim=(2, 3, 4))
-        perr = (pttl - tprod) * (pttl - tprod)
-
-        yyld = pylds * country_area_weights
-        ymns = th.sum(yyld, dim=(2, 3, 4)) / (1e-7 + th.sum(country_area_weights * (yyld > 0), dim=(2, 3, 4)))
-        yerr = (ymns - tylds) * (ymns - tylds)
-
-        return th.mean(th.sum(perr, dim=1)) + th.mean(th.mean(yerr, dim=1))
-
-    def print_errors(self, predict, targets):
-        print('----------------------------------------------------------------')
-        for ix, key in enumerate(ds.countries):
-            print(key, 'product', tprod[0, ix].item(), prmse[0, ix].item(), pmax[0, ix].item(), 'yeilds', tylds[0, ix].item(), yrmse[0, ix].item(), ymax[0, ix].item())
-        print('----------------------------------------------------------------')
-
-    def make_plot(self, xs, ys):
-        years, data = xs
-        prods, ylds = ys
-        for yr, pd, yd in zip(years, prods, ylds):
-            pd = pd[0, 0, :, :]
-            yd = yd[0, 0, :, :]
-            pd = pd.cpu().numpy().reshape([73, 144])
-            yd = yd.cpu().numpy().reshape([73, 144])
-            pd = np.roll(pd, 72, axis=1)
-            yd = np.roll(yd, 72, axis=1)
-
-            bm.plot('outputs/%s-prod-%d' % (self.model_name, yr), pd)
-            bm.plot('outputs/%s-ylds-%d' % (self.model_name, yr), yd)
-
-    def forward(self, years, data):
+    def forward(self, vector):
         raise NotImplementedError()
 
     def configure_optimizers(self):
@@ -75,7 +46,7 @@ class AbstractNet(pl.LightningModule, ABC):
         lss = self.benchmark(ys, yt)
         self.log('val_loss', lss, prog_bar=True)
         if self.current_epoch % 100 == 19:
-            self.make_plot(xs, ys)
+            self.make_plot('valid', batch_idx, xs, ys)
         return lss
 
     def test_step(self, test_batch, batch_idx):
@@ -84,7 +55,7 @@ class AbstractNet(pl.LightningModule, ABC):
         lss = self.benchmark(ys, yt)
         self.log('test_loss', lss)
         self.print_errors(ys, yt)
-        self.make_plot(xs, ys)
+        self.make_plot('test', batch_idx, xs, ys)
         return lss
 
     def train_dataloader(self) -> TRAIN_DATALOADERS:
@@ -103,18 +74,9 @@ class AbstractNet(pl.LightningModule, ABC):
 class Baseline(AbstractNet):
     def __init__(self):
         super().__init__()
-        self.param = nn.Parameter(th.ones(1, 1, 1, 1, 1))
         self.model_name = 'bs'
 
-    def forward(self, years, data):
-        pttal = pcoeff * years + pbias
-        prod = (pttal / land_total).reshape([-1, 1, 1, 1, 1])
-        pred = prod * land.reshape([-1, 1, 1, 73, 144]) * self.param
-
-        yttal = ycoeff * years + ybias
-        ylds = (yttal / land_total).reshape([-1, 1, 1, 1, 1])
-        ylds = ylds * land.reshape([-1, 1, 1, 73, 144]) * self.param
-
+    def forward(self, vector):
         return pred, ylds
 
     def loss(self, predict, target):
