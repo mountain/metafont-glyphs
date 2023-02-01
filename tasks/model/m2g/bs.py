@@ -28,8 +28,8 @@ class AbstractNet(pl.LightningModule, ABC):
         src = xd.cpu().numpy().reshape((96, 96))
         tgt = yd.cpu().numpy().reshape((96, 96))
         os.makedirs('temp/outputs', exist_ok=True)
-        cv2.imwrite('temp/outputs/%s-%03d' % ('o', ix), src)
-        cv2.imwrite('temp/outputs/%s-%03d' % (iname, ix), tgt)
+        cv2.imwrite('temp/outputs/%s-%03d-%03d.png' % ('o', self.current_epoch, ix), src)
+        cv2.imwrite('temp/outputs/%s-%03d-%03d.png' % (iname, self.current_epoch, ix), tgt)
 
     def forward(self, vector):
         raise NotImplementedError()
@@ -70,7 +70,7 @@ class AbstractNet(pl.LightningModule, ABC):
         return lss
 
     def train_dataloader(self) -> TRAIN_DATALOADERS:
-        return DataLoader(ds.ParquetDataset("data/dataset/train.parquet"), batch_size=10, num_workers=8, shuffle=True)
+        return DataLoader(ds.ParquetDataset("data/dataset/train.parquet"), batch_size=20, num_workers=10, shuffle=True)
 
     def test_dataloader(self) -> EVAL_DATALOADERS:
         return DataLoader(ds.ParquetDataset("data/dataset/test.parquet"), batch_size=10, num_workers=8, shuffle=False)
