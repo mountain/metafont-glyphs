@@ -74,10 +74,10 @@ class AbstractNet(pl.LightningModule, ABC):
         return DataLoader(ds.ParquetDataset("data/dataset/train.parquet"), batch_size=20, num_workers=8, shuffle=True)
 
     def test_dataloader(self) -> EVAL_DATALOADERS:
-        return DataLoader(ds.ParquetDataset("data/dataset/test.parquet"), batch_size=10, num_workers=8, shuffle=False)
+        return DataLoader(ds.ParquetDataset("data/dataset/test.parquet"), batch_size=10, num_workers=1, shuffle=False)
 
     def val_dataloader(self) -> EVAL_DATALOADERS:
-        return DataLoader(ds.ParquetDataset("data/dataset/validation.parquet"), batch_size=10, num_workers=8, shuffle=False)
+        return DataLoader(ds.ParquetDataset("data/dataset/validation.parquet"), batch_size=10, num_workers=1, shuffle=False)
 
     def predict_dataloader(self) -> EVAL_DATALOADERS:
         pass
