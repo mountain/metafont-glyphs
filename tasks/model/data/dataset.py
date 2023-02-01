@@ -4,7 +4,7 @@ import pyarrow.parquet as pq
 from torch.utils.data import Dataset
 
 
-maxlen = 100
+maxlen = 200
 
 
 class ParquetDataset(Dataset):

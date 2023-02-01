@@ -25,8 +25,8 @@ class AbstractNet(pl.LightningModule, ABC):
     def make_plot(self, iname, ix, xs, ys):
         xd = xs[0, 0, :, :]
         yd = ys[0, 0, :, :]
-        src = xd.cpu().numpy().reshape((96, 96))
-        tgt = yd.cpu().numpy().reshape((96, 96))
+        src = np.array(xd.cpu().numpy().reshape((96, 96)) * 255, dtype=np.uint8)
+        tgt = np.array(yd.cpu().numpy().reshape((96, 96)) * 255, dtype=np.uint8)
         os.makedirs('temp/outputs', exist_ok=True)
         cv2.imwrite('temp/outputs/%s-%03d-%03d.png' % ('o', self.current_epoch, ix), src)
         cv2.imwrite('temp/outputs/%s-%03d-%03d.png' % (iname, self.current_epoch, ix), tgt)
@@ -91,14 +91,14 @@ class Baseline(AbstractNet):
 
     def forward(self, vector):
         b = vector.shape[0]
-        vector = vector.reshape(b, 50, 2)
-        src = th.cat((vector, th.zeros_like(vector), th.zeros_like(vector[:, :, 0:1])), dim=2).reshape(b, 50, 5)
+        vector = vector.reshape(b, 100, 2)
+        src = th.cat((vector, th.zeros_like(vector), th.zeros_like(vector[:, :, 0:1])), dim=2).reshape(b, 100, 5)
         tgt = th.zeros_like(src)
-        out = th.sigmoid(self.lc(self.transformer(src, tgt)).reshape(b, 50, 5))
-        curve = out[:, :, 0:2].reshape(b, 50, 2)
-        widthx = out[:, :, 2:3].reshape(b, 50, 1, 1)
-        widthy = out[:, :, 3:4].reshape(b, 50, 1, 1)
-        densty = out[:, :, 3:4].reshape(b, 50, 1, 1) * 10
+        out = th.sigmoid(self.lc(self.transformer(src, tgt)).reshape(b, 100, 5))
+        curve = out[:, :, 0:2].reshape(b, 100, 2)
+        widthx = out[:, :, 2:3].reshape(b, 100, 1, 1)
+        widthy = out[:, :, 3:4].reshape(b, 100, 1, 1)
+        densty = out[:, :, 3:4].reshape(b, 100, 1, 1) * 10
         return stroke(curve, widthx, widthy, densty)
 
     def loss(self, predict, target):
