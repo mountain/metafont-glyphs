@@ -70,7 +70,7 @@ class AbstractNet(pl.LightningModule, ABC):
         return lss
 
     def train_dataloader(self) -> TRAIN_DATALOADERS:
-        return DataLoader(ds.ParquetDataset("data/dataset/train.parquet"), batch_size=20, num_workers=10, shuffle=True)
+        return DataLoader(ds.ParquetDataset("data/dataset/train.parquet"), batch_size=20, num_workers=8, shuffle=True)
 
     def test_dataloader(self) -> EVAL_DATALOADERS:
         return DataLoader(ds.ParquetDataset("data/dataset/test.parquet"), batch_size=10, num_workers=8, shuffle=False)
