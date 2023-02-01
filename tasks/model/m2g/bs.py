@@ -23,11 +23,13 @@ class AbstractNet(pl.LightningModule, ABC):
         self.benchmark = nn.MSELoss()
 
     def make_plot(self, iname, ix, xs, ys):
+        xd = xs[0, 0, :, :]
         yd = ys[0, 0, :, :]
-        glyph = yd.cpu().numpy().reshape((96, 96))
+        src = xd.cpu().numpy().reshape((96, 96))
+        tgt = yd.cpu().numpy().reshape((96, 96))
         os.makedirs('temp/outputs', exist_ok=True)
-        cv2.imwrit('temp/outputs/%s-%03d' % ('o', ix), glyph)
-        cv2.imwrit('temp/outputs/%s-%03d' % (iname, ix), glyph)
+        cv2.imwrite('temp/outputs/%s-%03d' % ('o', ix), src)
+        cv2.imwrite('temp/outputs/%s-%03d' % (iname, ix), tgt)
 
     def forward(self, vector):
         raise NotImplementedError()
