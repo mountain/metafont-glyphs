@@ -55,7 +55,7 @@ class AbstractNet(pl.LightningModule, ABC):
         glyphs = glyphs.reshape(-1, 1, 96, 96)
         lss = self.loss(images, glyphs)
         self.log('val_loss', lss, prog_bar=True)
-        if batch_idx % 100 == 19:
+        if batch_idx % 10 == 9:
             self.make_plot('v', batch_idx, glyphs, images)
         return lss
 
@@ -91,14 +91,15 @@ class Baseline(AbstractNet):
 
     def forward(self, vector):
         b = vector.shape[0]
-        vector = vector.reshape(b, 100, 2)
-        src = th.cat((vector, th.zeros_like(vector), th.zeros_like(vector[:, :, 0:1])), dim=2).reshape(b, 100, 5)
+        s = ds.maxlen // 2
+        vector = vector.reshape(b, s, 2)
+        src = th.cat((vector, th.zeros_like(vector), th.zeros_like(vector[:, :, 0:1])), dim=2).reshape(b, s, 5)
         tgt = th.zeros_like(src)
-        out = th.sigmoid(self.lc(self.transformer(src, tgt)).reshape(b, 100, 5))
-        curve = out[:, :, 0:2].reshape(b, 100, 2)
-        widthx = out[:, :, 2:3].reshape(b, 100, 1, 1)
-        widthy = out[:, :, 3:4].reshape(b, 100, 1, 1)
-        densty = out[:, :, 3:4].reshape(b, 100, 1, 1) * 10
+        out = th.sigmoid(self.lc(self.transformer(src, tgt)).reshape(b, s, 5))
+        curve = out[:, :, 0:2].reshape(b, s, 2)
+        widthx = out[:, :, 2:3].reshape(b, s, 1, 1)
+        widthy = out[:, :, 3:4].reshape(b, s, 1, 1)
+        densty = out[:, :, 3:4].reshape(b, s, 1, 1) * 10
         return stroke(curve, widthx, widthy, densty)
 
     def loss(self, predict, target):
