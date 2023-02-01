@@ -53,7 +53,7 @@ class AbstractNet(pl.LightningModule, ABC):
         glyphs = glyphs.reshape(-1, 1, 96, 96)
         lss = self.loss(images, glyphs)
         self.log('val_loss', lss, prog_bar=True)
-        if self.current_epoch % 100 == 19:
+        if batch_idx % 100 == 19:
             self.make_plot('v', batch_idx, glyphs, images)
         return lss
 
