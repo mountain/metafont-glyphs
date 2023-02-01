@@ -20,7 +20,7 @@ class AbstractNet(pl.LightningModule, ABC):
     def __init__(self):
         super().__init__()
         self.lr = 0.0001
-        self.benchmark = nn.BCELoss()
+        self.benchmark = nn.MSELoss()
 
     def make_plot(self, iname, ix, xs, ys):
         yd = ys[0, 0, :, :]
@@ -100,8 +100,7 @@ class Baseline(AbstractNet):
         return stroke(curve, widthx, widthy, densty)
 
     def loss(self, predict, target):
-        error = (predict - target) * (predict - target)
-        return error.mean()
+        return self.benchmark(predict, target)
 
 
 _model_ = Baseline
