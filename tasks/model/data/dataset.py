@@ -18,7 +18,7 @@ class ParquetDataset(Dataset):
         return self.table['glyphs'].shape[0]
 
     def __getitem__(self, index):
-        glyphs = np.array(list(self.table['glyphs'][index]), dtype=np.float32)
+        glyphs = np.array(list(self.table['glyphs'][index]), dtype=np.float32) / 255
         vectors = np.array(list(self.table['vectors'][index]), dtype=np.float32)
         leng = vectors.shape[0]
         if leng < maxlen:

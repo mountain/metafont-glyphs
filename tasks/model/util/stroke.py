@@ -5,8 +5,8 @@ from torch import Tensor
 
 
 def cast(element, device=-1) -> Tensor:
-    element = np.array(element, dtype=np.float64)
-    tensor = th.DoubleTensor(element)
+    element = np.array(element, dtype=np.float32)
+    tensor = th.FloatTensor(element)
     if device != -1 and th.cuda.is_available():
         return tensor.cuda(device=device)
     else:
@@ -19,7 +19,7 @@ IY = cast((IY / 96).reshape(1, 1, 96, 96))
 
 
 def step(p, xs):
-    return 1 / ((th.exp(500 * xs - 500 * p) + 1) * (th.exp(-500 * xs - 500 * p) + 1))
+    return 1 / ((th.exp(10 * xs - 10 * p) + 1) * (th.exp(-10 * xs - 10 * p) + 1))
 
 
 def plateu(center, width, xs):
@@ -36,5 +36,5 @@ def stroke(curve, widthx, widthy, density):
     b = curve.shape[0]
     xs = curve[:, :, 0].reshape(b, -1, 1, 1)
     ys = curve[:, :, 1].reshape(b, -1, 1, 1)
-    img = th.sum(point(xs, ys, widthx, widthy, density), dim=1, keepdim=True)
+    img = th.tanh(th.sum(point(xs, ys, widthx, widthy, density), dim=1, keepdim=True))
     return img
