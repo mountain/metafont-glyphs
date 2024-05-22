@@ -277,11 +277,21 @@ TSWLatexianTemp*
 *.ninja
 
 .idea/
+.vscode/
 temp/
 data/metafont/
 data/vector/
 data/glyph/
 data/dataset/
 data/model/
+
+.py/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyz
+*.pyw
+
 
 

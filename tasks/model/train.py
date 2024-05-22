@@ -13,7 +13,7 @@ else:
     accelerator = 'cpu'
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-n", "--n_epochs", type=int, default=50, help="number of epochs of training")
+parser.add_argument("-n", "--n_epochs", type=int, default=1000, help="number of epochs of training")
 parser.add_argument("-d", "--direction", type=str, default='g2m', help="model direction")
 parser.add_argument("-m", "--model", type=str, default='bs', help="model to execute")
 opt = parser.parse_args()

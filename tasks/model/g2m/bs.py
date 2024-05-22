@@ -63,17 +63,49 @@ class AbstractG2MNet(ltn.LightningModule):
         print()
 
 
+class OptAEGV3(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.vx = nn.Parameter(th.zeros(1, 1, 1))
+        self.vy = nn.Parameter(th.ones(1, 1, 1))
+        self.wx = nn.Parameter(th.zeros(1, 1, 1))
+        self.wy = nn.Parameter(th.ones(1, 1, 1))
+        self.afactor = nn.Parameter(th.zeros(1, 1))
+        self.mfactor = nn.Parameter(th.ones(1, 1))
+
+    def flow(self, dx, dy, data):
+        return data * (1 + dy) + dx
+
+    def forward(self, data):
+        shape = data.size()
+        data = data.flatten(1)
+        data = data - data.mean()
+        data = data / data.std()
+
+        b = shape[0]
+        v = self.flow(self.vx, self.vy, data.view(b, -1, 1))
+        w = self.flow(self.wx, self.wy, data.view(b, -1, 1))
+
+        dx = self.afactor * th.sum(v * th.sigmoid(w), dim=-1)
+        dy = self.mfactor * th.tanh(data)
+        data = self.flow(dx, dy, data)
+
+        return data.view(*shape)
+
+
 class Baseline(AbstractG2MNet):
     def __init__(self):
         super().__init__()
         self.model_name = 'bs'
         self.vit = VisionTransformer(
             image_size=96, patch_size=16, num_layers=6, num_heads=16, num_classes=100,
-            hidden_dim=256, mlp_dim=128, dropout=0.1, attention_dropout=0.1
+            hidden_dim=512, mlp_dim=256, dropout=0.1, attention_dropout=0.1
         )
         first_conv = self.vit.conv_proj
         self.vit.conv_proj = nn.Conv2d(1, first_conv.out_channels,
           kernel_size=first_conv.kernel_size, stride=first_conv.stride, padding=first_conv.padding)
+        for ix in range(6):
+            self.vit.encoder.layers[ix].mlp[1] = OptAEGV3()
 
     def forward(self, glyph):
         return self.vit(glyph)
