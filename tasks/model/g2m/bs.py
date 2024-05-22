@@ -36,7 +36,7 @@ class AbstractG2MNet(ltn.LightningModule):
         glyphs, vectors = val_batch
         vectors = vectors.reshape(-1, 100)
         glyphs = glyphs.reshape(-1, 1, 96, 96)
-        strokes = self.forward(glyphs).reshape(-1, 1, 96, 96) * 0.98 + 0.01
+        strokes = self.forward(glyphs).reshape(-1, 100)
         lss = self.loss(strokes, vectors)
         self.log('val_loss', lss, prog_bar=True)
         return lss
@@ -45,7 +45,7 @@ class AbstractG2MNet(ltn.LightningModule):
         glyphs, vectors = test_batch
         vectors = vectors.reshape(-1, 100)
         glyphs = glyphs.reshape(-1, 1, 96, 96)
-        strokes = self.forward(glyphs).reshape(-1, 1, 96, 96) * 0.98 + 0.01
+        strokes = self.forward(glyphs).reshape(-1, 100)
         lss = self.loss(strokes, vectors)
         self.log('test_loss', lss)
         return lss
