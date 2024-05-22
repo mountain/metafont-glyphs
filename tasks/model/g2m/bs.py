@@ -69,7 +69,7 @@ class Baseline(AbstractG2MNet):
         self.model_name = 'bs'
         self.vit = VisionTransformer(
             image_size=96, patch_size=12, num_layers=6, num_heads=16, num_classes=100,
-            hidden_dim=128, mlp_dim=256, dropout=0.1, attention_dropout=0.1
+            hidden_dim=128, mlp_dim=64, dropout=0.1, attention_dropout=0.1
         )
         first_conv = self.vit.conv_proj
         self.vit.conv_proj = nn.Conv2d(1, first_conv.out_channels,
