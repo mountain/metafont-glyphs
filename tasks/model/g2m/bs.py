@@ -68,7 +68,7 @@ class Baseline(AbstractG2MNet):
         super().__init__()
         self.model_name = 'bs'
         self.vit = VisionTransformer(
-            image_size=96, patch_size=16, num_layers=1, num_heads=8, num_classes=100,
+            image_size=96, patch_size=16, num_layers=4, num_heads=8, num_classes=100,
             hidden_dim=512, mlp_dim=128, dropout=0.1, attention_dropout=0.1
         )
 
