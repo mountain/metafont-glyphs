@@ -51,13 +51,13 @@ class AbstractG2MNet(ltn.LightningModule):
         return lss
 
     def train_dataloader(self):
-        return DataLoader(ds.ParquetDataset("data/dataset/train.parquet"), batch_size=20, num_workers=8, shuffle=True)
+        return DataLoader(ds.ParquetDataset("../../data/dataset/train.parquet"), batch_size=20, num_workers=8, shuffle=True)
 
     def val_dataloader(self):
-        return DataLoader(ds.ParquetDataset("data/dataset/validation.parquet"), batch_size=10, num_workers=1, shuffle=False)
+        return DataLoader(ds.ParquetDataset("../../data/dataset/validation.parquet"), batch_size=10, num_workers=1, shuffle=False)
 
     def test_dataloader(self):
-        return DataLoader(ds.ParquetDataset("data/dataset/test.parquet"), batch_size=10, num_workers=1, shuffle=False)
+        return DataLoader(ds.ParquetDataset("../../data/dataset/test.parquet"), batch_size=10, num_workers=1, shuffle=False)
 
 
 class Baseline(AbstractG2MNet):
