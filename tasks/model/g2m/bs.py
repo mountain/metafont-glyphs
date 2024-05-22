@@ -59,6 +59,9 @@ class AbstractG2MNet(ltn.LightningModule):
     def test_dataloader(self):
         return DataLoader(ds.ParquetDataset("../../data/dataset/test.parquet"), batch_size=64, num_workers=1, shuffle=False, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
 
+    def on_save_checkpoint(self, checkpoint):
+        print()
+
 
 class Baseline(AbstractG2MNet):
     def __init__(self):
