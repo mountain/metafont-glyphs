@@ -70,6 +70,7 @@ class Baseline(AbstractG2MNet):
         )
 
     def forward(self, glyph):
+        glyph = th.cat((glyph, glyph, glyph), dim=1)
         return self.vit(glyph)
 
 
