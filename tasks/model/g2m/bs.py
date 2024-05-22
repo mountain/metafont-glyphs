@@ -108,7 +108,7 @@ class Baseline(AbstractG2MNet):
             self.vit.encoder.layers[ix].mlp[1] = OptAEGV3()
 
     def forward(self, glyph):
-        return self.vit(glyph)
+        return th.tanh(self.vit(glyph))
 
 
 _model_ = Baseline
