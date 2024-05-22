@@ -71,9 +71,11 @@ class Baseline(AbstractG2MNet):
             image_size=96, patch_size=16, num_layers=6, num_heads=16, num_classes=100,
             hidden_dim=512, mlp_dim=512, dropout=0.1, attention_dropout=0.1
         )
+        first_conv = self.vit.conv_proj[0][0]
+        self.vit.conv_proj[0][0] = nn.Conv2d(1, first_conv.out_channels,
+          kernel_size=first_conv.kernel_size, stride=first_conv.stride, padding=first_conv.padding)
 
     def forward(self, glyph):
-        glyph = th.cat((glyph, glyph, glyph), dim=1)
         return self.vit(glyph)
 
 
