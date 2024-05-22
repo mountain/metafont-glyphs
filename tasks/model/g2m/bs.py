@@ -11,7 +11,7 @@ class AbstractG2MNet(ltn.LightningModule):
     def __init__(self):
         super().__init__()
         self.lr = 0.0001
-        self.benchmark = nn.MSELoss()
+        self.mse = nn.MSELoss()
 
     def forward(self, vector):
         raise NotImplementedError()
@@ -21,7 +21,7 @@ class AbstractG2MNet(ltn.LightningModule):
         return optimizer
 
     def loss(self, predict, target):
-        raise NotImplementedError()
+        return self.mse(predict, target)
 
     def training_step(self, train_batch, batch_idx):
         glyphs, vectors = train_batch
