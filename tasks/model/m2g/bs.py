@@ -1,26 +1,21 @@
 import os
 import numpy as np
-import torch as th
 import cv2
+import torch as th
 import torch.nn as nn
-import pytorch_lightning as pl
+import lightning as ltn
 import data.dataset as ds
 
-from abc import ABC
-from pytorch_lightning.utilities.types import TRAIN_DATALOADERS, EVAL_DATALOADERS
 from torch.utils.data import DataLoader
+
 from util.stroke import stroke
 
 
-if th.cuda.is_available():
-    pass
-
-
-class AbstractNet(pl.LightningModule, ABC):
+class AbstractM2GNet(ltn.LightningModule):
     def __init__(self):
         super().__init__()
         self.lr = 0.0001
-        self.benchmark = nn.MSELoss()
+        self.mse = nn.MSELoss()
 
     def make_plot(self, iname, ix, xs, ys):
         xd = xs[0, 0, :, :]
@@ -40,7 +35,7 @@ class AbstractNet(pl.LightningModule, ABC):
         return optimizer
 
     def loss(self, predict, target):
-        raise NotImplementedError()
+        return self.mse(predict, target)
 
     def training_step(self, train_batch, batch_idx):
         glyphs, vectors = train_batch
@@ -70,20 +65,20 @@ class AbstractNet(pl.LightningModule, ABC):
         self.make_plot('t', batch_idx, glyphs, images)
         return lss
 
-    def train_dataloader(self) -> TRAIN_DATALOADERS:
+    def train_dataloader(self):
         return DataLoader(ds.ParquetDataset("data/dataset/train.parquet"), batch_size=20, num_workers=8, shuffle=True)
 
-    def test_dataloader(self) -> EVAL_DATALOADERS:
+    def test_dataloader(self):
         return DataLoader(ds.ParquetDataset("data/dataset/test.parquet"), batch_size=10, num_workers=1, shuffle=False)
 
-    def val_dataloader(self) -> EVAL_DATALOADERS:
+    def val_dataloader(self):
         return DataLoader(ds.ParquetDataset("data/dataset/validation.parquet"), batch_size=10, num_workers=1, shuffle=False)
 
-    def predict_dataloader(self) -> EVAL_DATALOADERS:
-        pass
+    def on_save_checkpoint(self, checkpoint):
+        print()
 
 
-class Baseline(AbstractNet):
+class Baseline(AbstractM2GNet):
     def __init__(self):
         super().__init__()
         self.model_name = 'bs'
@@ -102,9 +97,6 @@ class Baseline(AbstractNet):
         widthy = out[:, :, 3:4].reshape(b, s, 1, 1)
         densty = out[:, :, 3:4].reshape(b, s, 1, 1) * 10
         return stroke(curve, widthx, widthy, densty)
-
-    def loss(self, predict, target):
-        return self.benchmark(predict, target)
 
 
 _model_ = Baseline
