@@ -39,7 +39,7 @@ class AbstractG2MNet(ltn.LightningModule):
         strokes = self.forward(glyphs).reshape(-1, 100)
         lss = self.loss(strokes, vectors)
         self.log('val_loss', lss, prog_bar=True)
-        print(zip(strokes[0], vectors[0]))
+        print(list(zip(strokes[0].numpy(), vectors[0].numpy())))
         return lss
 
     def test_step(self, test_batch, batch_idx):
