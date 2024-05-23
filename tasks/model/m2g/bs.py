@@ -22,7 +22,7 @@ class AbstractM2GNet(ltn.LightningModule):
         yd = ys[0, 0, :, :]
         src = np.array(xd.cpu().numpy().reshape((96, 96)) * 255, dtype=np.uint8)
         tgt = np.array(yd.cpu().numpy().reshape((96, 96)) * 255, dtype=np.uint8)
-        os.makedirs('temp/outputs', exist_ok=True)
+        os.makedirs('../../temp/outputs', exist_ok=True)
         if self.current_epoch == 0:
             cv2.imwrite('../../temp/outputs/%s-%03d-%03d.png' % ('o', self.current_epoch, ix), src)
         cv2.imwrite('../../temp/outputs/%s-%03d-%03d.png' % (iname, self.current_epoch, ix), tgt)
