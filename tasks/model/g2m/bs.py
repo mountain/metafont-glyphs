@@ -3,7 +3,7 @@ import torch.nn as nn
 import lightning as ltn
 import data.dataset as ds
 
-from torchvision.models.swin_transformer import SwinTransformer
+from torchvision.models.vision_transformer import VisionTransformer
 from torch.utils.data import DataLoader
 from util.stroke import IX, IY
 
@@ -98,15 +98,18 @@ class Baseline(AbstractG2MNet):
     def __init__(self):
         super().__init__()
         self.model_name = 'bs'
-        self.swin = SwinTransformer(
-            patch_size=[4, 4], num_classes=80, embed_dim=96,
-            depths=[2, 2, 6, 2], num_heads=[3, 6, 12, 24], window_size=[12, 12], mlp_ratio=4)
+        self.vit = VisionTransformer(
+            image_size=96, patch_size=16, num_layers=6, num_heads=16, num_classes=80,
+            hidden_dim=512, mlp_dim=256, dropout=0.1, attention_dropout=0.1
+        )
+        for ix in range(6):
+            self.vit.encoder.layers[ix].mlp[1] = OptAEGV3()
 
     def forward(self, glyph):
         xslice = IX.to(glyph.device) * th.ones_like(glyph)
         yslice = IY.to(glyph.device) * th.ones_like(glyph)
         data = th.cat([glyph, xslice, yslice], dim=1)
-        return self.swin(data)
+        return self.vit(data)
 
 
 _model_ = Baseline
