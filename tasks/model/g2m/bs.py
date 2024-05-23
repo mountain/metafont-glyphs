@@ -107,8 +107,8 @@ class Baseline(AbstractG2MNet):
             self.vit.encoder.layers[ix].mlp[1] = OptAEGV3()
 
     def forward(self, glyph):
-        xslice = IX.to(glyph.device()) * th.ones_like(glyph)
-        yslice = IY.to(glyph.device()) * th.ones_like(glyph)
+        xslice = IX.to(glyph.device) * th.ones_like(glyph)
+        yslice = IY.to(glyph.device) * th.ones_like(glyph)
         data = th.cat([glyph, xslice, yslice], dim=1)
         return self.vit(data)
 
