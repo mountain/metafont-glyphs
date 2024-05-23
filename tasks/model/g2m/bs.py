@@ -26,27 +26,27 @@ class AbstractG2MNet(ltn.LightningModule):
 
     def training_step(self, train_batch, batch_idx):
         glyphs, vectors = train_batch
-        vectors = vectors.reshape(-1, 100)
+        vectors = vectors.reshape(-1, 80)
         glyphs = glyphs.reshape(-1, 1, 96, 96)
-        strokes = self.forward(glyphs).reshape(-1, 100)
+        strokes = self.forward(glyphs).reshape(-1, 80)
         lss = self.loss(strokes, vectors)
         self.log('train_loss', lss, prog_bar=True)
         return lss
 
     def validation_step(self, val_batch, batch_idx):
         glyphs, vectors = val_batch
-        vectors = vectors.reshape(-1, 100)
+        vectors = vectors.reshape(-1, 80)
         glyphs = glyphs.reshape(-1, 1, 96, 96)
-        strokes = self.forward(glyphs).reshape(-1, 100)
+        strokes = self.forward(glyphs).reshape(-1, 80)
         lss = self.loss(strokes, vectors)
         self.log('val_loss', lss, prog_bar=True)
         return lss
 
     def test_step(self, test_batch, batch_idx):
         glyphs, vectors = test_batch
-        vectors = vectors.reshape(-1, 100)
+        vectors = vectors.reshape(-1, 80)
         glyphs = glyphs.reshape(-1, 1, 96, 96)
-        strokes = self.forward(glyphs).reshape(-1, 100)
+        strokes = self.forward(glyphs).reshape(-1, 80)
         lss = self.loss(strokes, vectors)
         self.log('test_loss', lss)
         return lss
@@ -113,7 +113,7 @@ class Baseline(AbstractG2MNet):
         self.conv5 = nn.Conv2d(3 + 15, 6, kernel_size=3, padding=1)
         self.nlon5 = OptAEGV3()
         self.vit = VisionTransformer(
-            image_size=96, patch_size=16, num_layers=6, num_heads=16, num_classes=100,
+            image_size=96, patch_size=16, num_layers=6, num_heads=16, num_classes=80,
             hidden_dim=512, mlp_dim=256, dropout=0.1, attention_dropout=0.1
         )
         first_conv = self.vit.conv_proj
