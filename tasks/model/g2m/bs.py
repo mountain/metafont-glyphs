@@ -5,6 +5,7 @@ import data.dataset as ds
 
 from torchvision.models.vision_transformer import VisionTransformer
 from torch.utils.data import DataLoader
+from util.stroke import IX, IY
 
 
 class AbstractG2MNet(ltn.LightningModule):
@@ -102,14 +103,14 @@ class Baseline(AbstractG2MNet):
             image_size=96, patch_size=16, num_layers=6, num_heads=16, num_classes=100,
             hidden_dim=512, mlp_dim=256, dropout=0.1, attention_dropout=0.1
         )
-        first_conv = self.vit.conv_proj
-        self.vit.conv_proj = nn.Conv2d(1, first_conv.out_channels,
-          kernel_size=first_conv.kernel_size, stride=first_conv.stride, padding=first_conv.padding)
         for ix in range(6):
             self.vit.encoder.layers[ix].mlp[1] = OptAEGV3()
 
     def forward(self, glyph):
-        return self.vit(glyph)
+        xslice = IX.to(glyph.device()) * th.ones_like(glyph)
+        yslice = IY.to(glyph.device()) * th.ones_like(glyph)
+        data = th.cat([glyph, xslice, yslice], dim=1)
+        return self.vit(data)
 
 
 _model_ = Baseline
