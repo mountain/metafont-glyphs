@@ -42,7 +42,7 @@ class AbstractM2GNet(ltn.LightningModule):
         images = self.forward(vectors).reshape(-1, 1, 96, 96)
         glyphs = glyphs.reshape(-1, 1, 96, 96)
         lss = self.loss(images, glyphs)
-        self.log('train_loss', lss)
+        self.log('train_loss', lss, prog_bar=True)
         return lss
 
     def validation_step(self, val_batch, batch_idx):
