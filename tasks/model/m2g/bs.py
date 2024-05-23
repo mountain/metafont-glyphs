@@ -66,13 +66,13 @@ class AbstractM2GNet(ltn.LightningModule):
         return lss
 
     def train_dataloader(self):
-        return DataLoader(ds.ParquetDataset("data/dataset/train.parquet"), batch_size=20, num_workers=8, shuffle=True)
-
-    def test_dataloader(self):
-        return DataLoader(ds.ParquetDataset("data/dataset/test.parquet"), batch_size=10, num_workers=1, shuffle=False)
+        return DataLoader(ds.ParquetDataset("../../data/dataset/train.parquet"), batch_size=128, num_workers=8, shuffle=True, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
 
     def val_dataloader(self):
-        return DataLoader(ds.ParquetDataset("data/dataset/validation.parquet"), batch_size=10, num_workers=1, shuffle=False)
+        return DataLoader(ds.ParquetDataset("../../data/dataset/validation.parquet"), batch_size=64, num_workers=3, shuffle=False, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
+
+    def test_dataloader(self):
+        return DataLoader(ds.ParquetDataset("../../data/dataset/test.parquet"), batch_size=64, num_workers=3, shuffle=False, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
 
     def on_save_checkpoint(self, checkpoint):
         print()
