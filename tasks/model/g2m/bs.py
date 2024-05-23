@@ -39,6 +39,7 @@ class AbstractG2MNet(ltn.LightningModule):
         strokes = self.forward(glyphs).reshape(-1, 100)
         lss = self.loss(strokes, vectors)
         self.log('val_loss', lss, prog_bar=True)
+        print(zip(strokes[0], vectors[0]))
         return lss
 
     def test_step(self, test_batch, batch_idx):
@@ -108,7 +109,7 @@ class Baseline(AbstractG2MNet):
             self.vit.encoder.layers[ix].mlp[1] = OptAEGV3()
 
     def forward(self, glyph):
-        return th.tanh(self.vit(glyph))
+        return self.vit(glyph)
 
 
 _model_ = Baseline
