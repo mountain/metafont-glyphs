@@ -3,8 +3,8 @@ import torch as th
 from torch import nn
 from torchvision.models import VisionTransformer
 
-from model.g2m.bs import AbstractG2MNet
-from model.util.stroke import IX, IY
+from g2m.bs import AbstractG2MNet
+from util.stroke import IX, IY
 
 
 def batch_aeg_product_optimized(A, B):
