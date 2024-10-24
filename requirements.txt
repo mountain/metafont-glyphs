@@ -1,8 +1,8 @@
-numpy==2.1.2
-opencv-python==4.10.0.84
-pyarrow==17.0.0
-pandas==2.2.3
-torch==2.2.2
-torchvision==0.17.2
-lightning==2.4.0
+numpy
+opencv-python
+pyarrow
+pandas
+torch
+torchvision
+lightning
 
