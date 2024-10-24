@@ -18,8 +18,9 @@ class AbstractG2MNet(ltn.LightningModule):
         raise NotImplementedError()
 
     def configure_optimizers(self):
-        optimizer = th.optim.Adam(self.parameters(), lr=self.lr)
-        return optimizer
+        optimizer = th.optim.AdamW(self.parameters(), lr=self.learning_rate)
+        scheduler = th.optim.lr_scheduler.CosineAnnealingLR(optimizer, 53)
+        return [optimizer], [scheduler]
 
     def loss(self, predict, target):
         return self.mse(predict, target)
@@ -52,13 +53,13 @@ class AbstractG2MNet(ltn.LightningModule):
         return lss
 
     def train_dataloader(self):
-        return DataLoader(ds.ParquetDataset("../../data/dataset/train.parquet"), batch_size=128, num_workers=8, shuffle=True, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
+        return DataLoader(ds.ParquetDataset("../../data/dataset/train.parquet"), batch_size=32, num_workers=8, shuffle=True, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
 
     def val_dataloader(self):
-        return DataLoader(ds.ParquetDataset("../../data/dataset/validation.parquet"), batch_size=64, num_workers=3, shuffle=False, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
+        return DataLoader(ds.ParquetDataset("../../data/dataset/validation.parquet"), batch_size=32, num_workers=3, shuffle=False, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
 
     def test_dataloader(self):
-        return DataLoader(ds.ParquetDataset("../../data/dataset/test.parquet"), batch_size=64, num_workers=3, shuffle=False, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
+        return DataLoader(ds.ParquetDataset("../../data/dataset/test.parquet"), batch_size=32, num_workers=3, shuffle=False, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
 
     def on_save_checkpoint(self, checkpoint):
         print()
