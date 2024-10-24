@@ -120,7 +120,7 @@ class AEGModel(AbstractG2MNet):
         xslice = IX.to(glyph.device) * th.ones_like(glyph)
         yslice = IY.to(glyph.device) * th.ones_like(glyph)
         data = th.cat([glyph, xslice, yslice], dim=1)
-        data = th.cat((self.vit08(data), self.vit16(data), self.vit32(data)), dim=1)
+        data = th.cat((self.vit16(data), self.vit32(data)), dim=1)
         return self.sln(data)
 
 
