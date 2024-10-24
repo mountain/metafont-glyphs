@@ -104,10 +104,10 @@ class ViTBlock(nn.Module):
         self.msa = nn.MultiheadAttention(embed_dim, num_heads, dropout=dropout)
         self.layernorm2 = nn.LayerNorm(embed_dim)
         self.mlp = nn.Sequential(
-            nn.Linear(embed_dim, mlp_dim),
-            nn.GELU(),
+            SemiLinear(embed_dim, mlp_dim),
+            OptAEGV3(),
             nn.Dropout(dropout),
-            nn.Linear(mlp_dim, embed_dim),
+            SemiLinear(mlp_dim, embed_dim),
             nn.Dropout(dropout)
         )
 
@@ -144,9 +144,9 @@ class ViT(nn.Module):
 
         # Regression head
         self.regression_head = nn.Sequential(
-            nn.Linear(embed_dim, 256),
-            nn.ReLU(),
-            nn.Linear(256, num_outputs)
+            SemiLinear(embed_dim, 256),
+            OptAEGV3(),
+            SemiLinear(256, num_outputs)
         )
 
     def forward(self, x):
@@ -181,21 +181,15 @@ class AEGModel(AbstractG2MNet):
     def __init__(self):
         super().__init__()
         self.model_name = 'aeg'
-        self.num_layers = 4
         self.vit16 = ViT(
-            image_size=96, patch_size=16, num_layers=self.num_layers, num_heads=16, mlp_dim=512, num_outputs=80
+            image_size=96, patch_size=16, num_layers=4, num_heads=16, mlp_dim=512, num_outputs=80
         )
-        self.vit32 = ViT(
-            image_size=96, patch_size=32, num_layers=self.num_layers, num_heads=16, mlp_dim=512, num_outputs=80
-        )
-        self.ln = nn.Linear(80 * 2, 80)
 
     def forward(self, glyph):
         xslice = IX.to(glyph.device) * th.ones_like(glyph)
         yslice = IY.to(glyph.device) * th.ones_like(glyph)
         data = th.cat([glyph, xslice, yslice], dim=1)
-        data = th.cat((self.vit16(data), self.vit32(data)), dim=1)
-        return self.ln(data)
+        return self.vit16(data)
 
 
 _model_ = AEGModel
