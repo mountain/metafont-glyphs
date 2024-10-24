@@ -104,10 +104,10 @@ class ViTBlock(nn.Module):
         self.msa = nn.MultiheadAttention(embed_dim, num_heads, dropout=dropout)
         self.layernorm2 = nn.LayerNorm(embed_dim)
         self.mlp = nn.Sequential(
-            nn.Linear(embed_dim, mlp_dim),
+            SemiLinear(embed_dim, mlp_dim),
             OptAEGV3(),
             nn.Dropout(dropout),
-            nn.Linear(mlp_dim, embed_dim),
+            SemiLinear(mlp_dim, embed_dim),
             nn.Dropout(dropout)
         )
 
@@ -127,7 +127,7 @@ class ViT(nn.Module):
         # Patch embedding
         self.patch_size = patch_size
         num_patches = (image_size // patch_size) ** 2
-        self.patch_embed = nn.Linear(patch_size * patch_size * 3, embed_dim)
+        self.patch_embed = SemiLinear(patch_size * patch_size * 3, embed_dim)
 
         # Class token and position embeddings
         self.cls_token = nn.Parameter(th.randn(1, 1, embed_dim))
@@ -144,8 +144,9 @@ class ViT(nn.Module):
 
         # Regression head
         self.regression_head = nn.Sequential(
+            SemiLinear(embed_dim, embed_dim * 2),
             OptAEGV3(),
-            nn.Linear(embed_dim, num_outputs)
+            SemiLinear(embed_dim * 2, num_outputs)
         )
 
     def forward(self, x):
