@@ -144,9 +144,9 @@ class ViT(nn.Module):
 
         # Regression head
         self.regression_head = nn.Sequential(
-            SemiLinear(embed_dim, 256),
+            nn.Linear(embed_dim, 256),
             OptAEGV3(),
-            SemiLinear(256, num_outputs)
+            nn.Linear(256, num_outputs)
         )
 
     def forward(self, x):
