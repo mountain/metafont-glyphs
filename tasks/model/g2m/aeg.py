@@ -102,10 +102,6 @@ class AEGModel(AbstractG2MNet):
         super().__init__()
         self.model_name = 'bs'
         self.num_layers = 4
-        self.vit04 = VisionTransformer(
-            image_size=96, patch_size=4, num_layers=self.num_layers, num_heads=16, num_classes=80,
-            hidden_dim=128, mlp_dim=512, dropout=0.1, attention_dropout=0.1
-        )
         self.vit08 = VisionTransformer(
             image_size=96, patch_size=8, num_layers=self.num_layers, num_heads=16, num_classes=80,
             hidden_dim=128, mlp_dim=512, dropout=0.1, attention_dropout=0.1
@@ -119,18 +115,17 @@ class AEGModel(AbstractG2MNet):
             hidden_dim=128, mlp_dim=512, dropout=0.1, attention_dropout=0.1
         )
         for ix in range(self.num_layers):
-            self.vit04.encoder.layers[ix].mlp[1] = OptAEGV3()
             self.vit08.encoder.layers[ix].mlp[1] = OptAEGV3()
             self.vit16.encoder.layers[ix].mlp[1] = OptAEGV3()
             self.vit32.encoder.layers[ix].mlp[1] = OptAEGV3()
 
-        self.sln = SemiLinear(80 * 4, 80)
+        self.sln = SemiLinear(80 * 3, 80)
 
     def forward(self, glyph):
         xslice = IX.to(glyph.device) * th.ones_like(glyph)
         yslice = IY.to(glyph.device) * th.ones_like(glyph)
         data = th.cat([glyph, xslice, yslice], dim=1)
-        data = th.cat((self.vit04(data), self.vit08(data), self.vit16(data), self.vit32(data)), dim=1)
+        data = th.cat((self.vit08(data), self.vit16(data), self.vit32(data)), dim=1)
         return self.sln(data)
 
 
