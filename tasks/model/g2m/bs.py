@@ -11,14 +11,14 @@ from util.stroke import IX, IY
 class AbstractG2MNet(ltn.LightningModule):
     def __init__(self):
         super().__init__()
-        self.lr = 0.0001
+        self.lr = 0.001
         self.mse = nn.MSELoss()
 
     def forward(self, vector):
         raise NotImplementedError()
 
     def configure_optimizers(self):
-        optimizer = th.optim.AdamW(self.parameters(), lr=self.learning_rate)
+        optimizer = th.optim.AdamW(self.parameters(), lr=self.lr)
         scheduler = th.optim.lr_scheduler.CosineAnnealingLR(optimizer, 53)
         return [optimizer], [scheduler]
 
