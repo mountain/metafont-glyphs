@@ -104,10 +104,10 @@ class ViTBlock(nn.Module):
         self.msa = nn.MultiheadAttention(embed_dim, num_heads, dropout=dropout)
         self.layernorm2 = nn.LayerNorm(embed_dim)
         self.mlp = nn.Sequential(
-            SemiLinear(embed_dim, mlp_dim),
+            nn.Linear(embed_dim, mlp_dim),
             OptAEGV3(),
             nn.Dropout(dropout),
-            SemiLinear(mlp_dim, embed_dim),
+            nn.Linear(mlp_dim, embed_dim),
             nn.Dropout(dropout)
         )
 
