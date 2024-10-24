@@ -104,19 +104,19 @@ class AEGModel(AbstractG2MNet):
         self.num_layers = 4
         self.vit04 = VisionTransformer(
             image_size=96, patch_size=4, num_layers=self.num_layers, num_heads=16, num_classes=80,
-            hidden_dim=512, mlp_dim=256, dropout=0.1, attention_dropout=0.1
+            hidden_dim=128, mlp_dim=512, dropout=0.1, attention_dropout=0.1
         )
         self.vit08 = VisionTransformer(
             image_size=96, patch_size=8, num_layers=self.num_layers, num_heads=16, num_classes=80,
-            hidden_dim=512, mlp_dim=256, dropout=0.1, attention_dropout=0.1
+            hidden_dim=128, mlp_dim=512, dropout=0.1, attention_dropout=0.1
         )
         self.vit16 = VisionTransformer(
             image_size=96, patch_size=16, num_layers=self.num_layers, num_heads=16, num_classes=80,
-            hidden_dim=512, mlp_dim=256, dropout=0.1, attention_dropout=0.1
+            hidden_dim=128, mlp_dim=512, dropout=0.1, attention_dropout=0.1
         )
         self.vit32 = VisionTransformer(
             image_size=96, patch_size=32, num_layers=self.num_layers, num_heads=16, num_classes=80,
-            hidden_dim=512, mlp_dim=256, dropout=0.1, attention_dropout=0.1
+            hidden_dim=128, mlp_dim=512, dropout=0.1, attention_dropout=0.1
         )
         for ix in range(self.num_layers):
             self.vit04.encoder.layers[ix].mlp[1] = OptAEGV3()
