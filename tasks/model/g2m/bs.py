@@ -5,7 +5,7 @@ import data.dataset as ds
 
 from torchvision.models.vision_transformer import VisionTransformer
 from torch.utils.data import DataLoader
-from util.stroke import IX, IY
+from model.util.stroke import IX, IY
 
 
 class AbstractG2MNet(ltn.LightningModule):
