@@ -63,7 +63,7 @@ class SemiLinear(nn.Module):
         expanded_weight = self.weight.expand(input.size(0), -1, -1)  # (batch_size, out_features, in_features)
         print(expanded_weight.shape)
         print(input.shape)
-        reshaped_input = input.view(input.size(0), input.size(1), 1)  # (batch_size, in_features, 1)
+        reshaped_input = input.view(input.size(0), input.size(1), -1)  # (batch_size, in_features, 1)
         aeg_result = batch_aeg_product_optimized(expanded_weight, reshaped_input)  # (batch_size, out_features, 1)
         aeg_result = aeg_result.squeeze(2)  # (batch_size, out_features)
         return th.sigmoid(aeg_result) * self.proj(input)
