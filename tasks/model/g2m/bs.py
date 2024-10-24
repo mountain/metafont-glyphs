@@ -53,13 +53,13 @@ class AbstractG2MNet(ltn.LightningModule):
         return lss
 
     def train_dataloader(self):
-        return DataLoader(ds.ParquetDataset("../../data/dataset/train.parquet"), batch_size=32, num_workers=8, shuffle=True, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
+        return DataLoader(ds.ParquetDataset("../../data/dataset/train.parquet"), batch_size=32, num_workers=2, shuffle=True, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
 
     def val_dataloader(self):
-        return DataLoader(ds.ParquetDataset("../../data/dataset/validation.parquet"), batch_size=32, num_workers=3, shuffle=False, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
+        return DataLoader(ds.ParquetDataset("../../data/dataset/validation.parquet"), batch_size=32, num_workers=2, shuffle=False, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
 
     def test_dataloader(self):
-        return DataLoader(ds.ParquetDataset("../../data/dataset/test.parquet"), batch_size=32, num_workers=3, shuffle=False, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
+        return DataLoader(ds.ParquetDataset("../../data/dataset/test.parquet"), batch_size=32, num_workers=2, shuffle=False, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
 
     def on_save_checkpoint(self, checkpoint):
         print()
@@ -101,7 +101,7 @@ class Baseline(AbstractG2MNet):
         self.model_name = 'bs'
         self.vit = VisionTransformer(
             image_size=96, patch_size=16, num_layers=6, num_heads=16, num_classes=80,
-            hidden_dim=512, mlp_dim=256, dropout=0.1, attention_dropout=0.1
+            hidden_dim=128, mlp_dim=256, dropout=0.1, attention_dropout=0.1
         )
         for ix in range(6):
             self.vit.encoder.layers[ix].mlp[1] = OptAEGV3()
