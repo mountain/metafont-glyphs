@@ -114,14 +114,14 @@ class AEGModel(AbstractG2MNet):
             self.vit16.encoder.layers[ix].mlp[1] = OptAEGV3()
             self.vit32.encoder.layers[ix].mlp[1] = OptAEGV3()
 
-        self.sln = SemiLinear(1024 * 2, 80)
+        self.ln = nn.Linear(1024 * 2, 80)
 
     def forward(self, glyph):
         xslice = IX.to(glyph.device) * th.ones_like(glyph)
         yslice = IY.to(glyph.device) * th.ones_like(glyph)
         data = th.cat([glyph, xslice, yslice], dim=1)
         data = th.cat((self.vit16(data), self.vit32(data)), dim=1)
-        return self.sln(data)
+        return self.ln(data)
 
 
 _model_ = AEGModel
