@@ -181,7 +181,7 @@ class AEGModel(AbstractG2MNet):
         super().__init__()
         self.model_name = 'aeg'
         self.vit16 = ViT(
-            image_size=96, patch_size=16, num_layers=4, num_heads=16, mlp_dim=512, num_outputs=80
+            image_size=96, patch_size=16, num_layers=4, num_heads=16, embed_dim=128, mlp_dim=512, num_outputs=80
         )
 
     def forward(self, glyph):
