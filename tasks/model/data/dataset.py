@@ -23,9 +23,9 @@ class ParquetDataset(Dataset):
         return glyphs, vectors
 
 
-dltrain = DataLoader(ParquetDataset("../../data/dataset/train.parquet"), batch_size=32, num_workers=2, shuffle=True, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
-dlvalid = DataLoader(ParquetDataset("../../data/dataset/validation.parquet"), batch_size=32, num_workers=2, shuffle=False, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
-dltest = DataLoader(ParquetDataset("../../data/dataset/test.parquet"), batch_size=32, num_workers=2, shuffle=False, drop_last=True, pin_memory=True, prefetch_factor=2, persistent_workers=True)
+dltrain = DataLoader(ParquetDataset("../../data/dataset/train.parquet"), batch_size=1, num_workers=1, shuffle=False, drop_last=False, pin_memory=False, prefetch_factor=2, persistent_workers=True)
+dlvalid = DataLoader(ParquetDataset("../../data/dataset/validation.parquet"), batch_size=1, num_workers=1, shuffle=False, drop_last=False, pin_memory=False, prefetch_factor=2, persistent_workers=True)
+dltest = DataLoader(ParquetDataset("../../data/dataset/test.parquet"), batch_size=1, num_workers=1, shuffle=False, drop_last=False, pin_memory=False, prefetch_factor=2, persistent_workers=True)
 
 
 def build_vocab():
