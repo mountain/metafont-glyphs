@@ -7,69 +7,6 @@ from g2m.bs import AbstractG2MNet
 from util.stroke import IX, IY
 
 
-def batch_aeg_product_optimized(A, B):
-    """
-    优化后的 batch_aeg_product 函数
-    A: (batch_size, rows, features)
-    B: (batch_size, features, cols)
-    返回: (batch_size, rows, cols) 的结果
-    """
-    N, rows, features = A.shape
-    _, _, cols = B.shape
-
-    # 初始化结果张量
-    result = th.zeros(N, rows, cols, device=A.device, dtype=A.dtype)
-
-    # 创建行和列的索引
-    i_indices = th.arange(rows, device=A.device).view(rows, 1).expand(rows, cols)  # (rows, cols)
-    j_indices = th.arange(cols, device=A.device).view(1, cols).expand(rows, cols)  # (rows, cols)
-
-    for k in range(features):
-        # 计算 mask，其中 mask[i,j] = ((i + j + k) % 2 == 0)
-        mask = ((i_indices + j_indices + k) % 2 == 0).to(A.device)  # (rows, cols)
-
-        # 获取 A 和 B 中第 k 个特征
-        A_k = A[:, :, k].unsqueeze(2)  # (N, rows, 1)
-        B_k = B[:, k, :].unsqueeze(1)  # (N, 1, cols)
-
-        # 根据 mask 更新结果
-        # 使用广播机制使 mask 适应 (N, rows, cols)
-        mask_broadcast = mask.unsqueeze(0)  # (1, rows, cols)
-        mask_broadcast = mask_broadcast.expand(N, rows, cols)  # (N, rows, cols)
-
-        # 计算 (result + x) * y 和 (result + y) * x
-        option1 = (result + A_k) * B_k  # 当 mask 为 True 时使用
-        option2 = (result + B_k) * A_k  # 当 mask 为 False 时使用
-
-        # 使用 torch.where 根据 mask 选择对应的选项
-        result = th.where(mask_broadcast, option1, option2)
-
-    return result
-
-
-class SemiLinear(nn.Module):
-    def __init__(self, in_features, out_features):
-        super(nn.Linear, self).__init__()
-        self.in_features = in_features
-        self.out_features = out_features
-        self.weight = nn.Parameter(th.Tensor(1, out_features, in_features))
-        self.proj = nn.Linear(in_features, out_features)
-        self.reset_parameters()
-
-    def reset_parameters(self):
-        nn.init.kaiming_normal_(self.weight)
-
-    def forward(self, input):
-        shape = input.shape
-        input = input.view(-1, shape[-1])
-        expanded_weight = self.weight.expand(input.size(0), -1, -1)  # (batch_size, out_features, in_features)
-        reshaped_input = input.view(input.size(0), input.size(1), -1)  # (batch_size, in_features, 1)
-        aeg_result = batch_aeg_product_optimized(expanded_weight, reshaped_input)  # (batch_size, out_features, 1)
-        aeg_result = aeg_result.squeeze(2)  # (batch_size, out_features)
-        result = th.sigmoid(aeg_result) * self.proj(input)
-        return result.view(*shape[:-1], -1)
-
-
 class OptAEGV3(nn.Module):
     def __init__(self):
         super().__init__()
@@ -145,13 +82,6 @@ class ViT(nn.Module):
         # Layer normalization before the regression head
         self.layernorm = nn.LayerNorm(embed_dim)
 
-        # Regression head
-        self.regression_head = nn.Sequential(
-            nn.Linear(embed_dim, embed_dim * 2),
-            OptAEGV3(),
-            nn.Linear(embed_dim * 2, num_outputs)
-        )
-
     def forward(self, x):
         # Divide image into patches
         batch_size, channels, height, width = x.shape
@@ -179,8 +109,8 @@ class ViT(nn.Module):
 
         # print("regression:", x.shape)
         # Pass through the regression head
-        output = self.regression_head(x)
-        return output
+        # output = self.regression_head(x)
+        return x
 
 
 class AEGModel(AbstractG2MNet):
@@ -190,13 +120,23 @@ class AEGModel(AbstractG2MNet):
         self.vit16 = ViT(
             image_size=96, patch_size=16, num_layers=4, num_heads=16, embed_dim=128, mlp_dim=512, num_outputs=80
         )
+        self.vit32 = ViT(
+            image_size=96, patch_size=16, num_layers=4, num_heads=16, embed_dim=128, mlp_dim=512, num_outputs=80
+        )
+
+        # Regression head
+        self.regression_head = nn.Sequential(
+            nn.Linear(128 * 3, 128 * 4),
+            OptAEGV3(),
+            nn.Linear(128 * 4, 80)
+        )
 
     def forward(self, glyph):
         xslice = IX.to(glyph.device) * th.ones_like(glyph)
         yslice = IY.to(glyph.device) * th.ones_like(glyph)
         data = th.cat([glyph, xslice, yslice], dim=1)
-        return self.vit16(data)
-
+        data = th.cat([self.vit16(data), self.vit32(data)], dim=1)
+        return self.regression_head(data)
 
 _model_ = AEGModel
 
