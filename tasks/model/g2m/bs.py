@@ -9,15 +9,15 @@ from util.stroke import IX, IY
 
 dltrain = DataLoader(
     ds.VocabDataset("../../data/dataset/train.parquet"),
-    batch_size=32, num_workers=2, shuffle=True, persistent_workers=True
+    batch_size=32, num_workers=2, shuffle=True, persistent_workers=True, drop_last=True
 )
 dlvalid = DataLoader(
     ds.VocabDataset("../../data/dataset/validation.parquet"),
-    batch_size=32, num_workers=2, shuffle=False, persistent_workers=True
+    batch_size=32, num_workers=2, shuffle=False, persistent_workers=True, drop_last=True
 )
 dltest = DataLoader(
     ds.VocabDataset("../../data/dataset/test.parquet"),
-    batch_size=32, num_workers=2, shuffle=False, persistent_workers=True
+    batch_size=32, num_workers=2, shuffle=False, persistent_workers=True, drop_last=True
 )
 
 
