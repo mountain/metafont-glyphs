@@ -38,7 +38,7 @@ def build_vocab():
             for code in strokes.flatten():
                 if code not in vocab:
                     # keep 4 points of precision
-                    code = round(code, 4)
+                    code = round(code.item(), 4)
                     vocab[code] = len(vocab)
 
     return vocab
