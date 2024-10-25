@@ -24,23 +24,11 @@ dltest = DataLoader(
 )
 
 
-def to_code(x, vocab):
-    return th.tensor([vocab[code] for code in x], dtype=th.long)
-
-
-def to_onehot(x, vocab):
-    size = len(vocab)
-    onehot = th.zeros(x.size(0), size)
-    for i, code in enumerate(x):
-        onehot[i, vocab[code]] = 1
-    return onehot
-
-
 class AbstractG2MNet(ltn.LightningModule):
     def __init__(self):
         super().__init__()
         self.lr = 0.001
-        self.celoss = nn.CrossEntropyLoss(ignore_index=self.vocab['<pad>'])
+        self.celoss = nn.CrossEntropyLoss(ignore_index=self.vocab[ds.STARTER])
 
     def forward(self, vector, labels=None):
         raise NotImplementedError()
