@@ -211,7 +211,6 @@ class Baseline(AbstractG2MNet):
                 tgt = th.argmax(output, dim=-1)  # 使用预测的笔画作为输入
 
         outputs = th.cat(outputs, dim=1) # 将所有时间步的输出 logits 连接起来
-        print("output:", outputs.shape)
         return outputs
 
 
