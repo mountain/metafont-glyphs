@@ -158,11 +158,11 @@ class ViT(nn.Module):
         x = x.view(batch_size, channels, height // self.patch_size, self.patch_size, width // self.patch_size,
                    self.patch_size)
         x = x.permute(0, 2, 4, 1, 3, 5).contiguous().view(batch_size, -1, self.patch_size * self.patch_size * channels)
-        print("rearrange:", x.shape)
+        # print("rearrange:", x.shape)
 
         # Patch embedding
         x = self.patch_embed(x)
-        print("embedding:", x.shape)
+        # print("embedding:", x.shape)
 
         # Add class token and position embeddings
         cls_tokens = self.cls_token.expand(batch_size, -1, -1)
@@ -177,7 +177,7 @@ class ViT(nn.Module):
         # Take the class token output
         x = self.layernorm(x[:, 0])
 
-        print("regression:", x.shape)
+        # print("regression:", x.shape)
         # Pass through the regression head
         output = self.regression_head(x)
         return output
