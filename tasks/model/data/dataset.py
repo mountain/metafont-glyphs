@@ -35,7 +35,7 @@ def build_vocab():
     for dl in [dltrain, dlvalid, dltest]:
         for item in dl:
             _, strokes = item
-            for code in strokes.flattern():
+            for code in strokes.flatten():
                 if code not in vocab:
                     # keep 4 points of precision
                     code = round(code, 4)
