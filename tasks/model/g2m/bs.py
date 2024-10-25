@@ -28,7 +28,7 @@ class AbstractG2MNet(ltn.LightningModule):
     def __init__(self):
         super().__init__()
         self.lr = 0.001
-        self.celoss = nn.CrossEntropyLoss(ignore_index=self.vocab[ds.STARTER])
+        self.celoss = nn.CrossEntropyLoss(ignore_index=ds.VOCAB2ID[ds.STARTER])
 
     def forward(self, vector, labels=None):
         raise NotImplementedError()
