@@ -36,7 +36,7 @@ class AbstractG2MNet(ltn.LightningModule):
         return [optimizer], [scheduler]
 
     def loss(self, logits, labels):
-        loss = self.celoss(logits.view(-1, logits.size(-1)), labels.view(-1))
+        loss = self.celoss(logits, labels.view(-1))
         return loss
 
     def training_step(self, train_batch, batch_idx):
@@ -190,21 +190,26 @@ class Baseline(AbstractG2MNet):
         conditional = self.encoder(data)
         conditional = conditional.unsqueeze(1)
 
-        strokes = th.zeros(glyph.size(0), 80, dtype=th.long).to(glyph.device)
-        strokes[:, 0] = ds.VOCAB2ID[ds.STARTER]
+        outputs = [] # 用于存储每个时间步的输出 logits
+        tgt = th.zeros(glyph.size(0), 1, dtype=th.long).to(glyph.device)
+        tgt[:, 0] = ds.VOCAB2ID[ds.STARTER]
 
         # 如果是训练阶段，使用真实的 labels
         if labels is not None:
             for i in range(79):
+                output = self.decoder(tgt, conditional) # 获取当前时间步的输出 logits
+                outputs.append(output)
                 tgt = labels[:, i].unsqueeze(1)  # 使用真实的笔画作为输入
-                strokes[:, i + 1] = th.argmax(self.decoder(tgt, conditional), dim=-1)[:, 0]
         # 如果是推理阶段，使用预测的笔画
         else:
             for i in range(79):
-                tgt = strokes[:, i].unsqueeze(1)  # 使用预测的笔画作为输入
-                strokes[:, i + 1] = th.argmax(self.decoder(tgt, conditional), dim=-1)[:, 0]
+                output = self.decoder(tgt, conditional) # 获取当前时间步的输出 logits
+                outputs.append(output)
+                tgt = th.argmax(output, dim=-1)  # 使用预测的笔画作为输入
 
-        return strokes
+        outputs = th.cat(outputs, dim=1) # 将所有时间步的输出 logits 连接起来
+        return outputs
+
 
 _model_ = Baseline
 
