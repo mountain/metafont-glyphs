@@ -13,7 +13,7 @@ def collate_fn(batch):
 
     # Pad labels to the maximum length
     max_len = max(len(label) for label in labels)
-    padded_labels = [label + [ds.VOCAB2ID['<pad>']] * (max_len - len(label)) for label in labels]
+    padded_labels = [label + [ds.VOCAB2ID[ds.STARTER]] * (max_len - len(label)) for label in labels]
 
     # Convert to tensors
     glyphs = th.stack(glyphs)
