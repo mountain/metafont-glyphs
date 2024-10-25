@@ -49,7 +49,7 @@ def batch_aeg_product_optimized(A, B):
 
 class SemiLinear(nn.Module):
     def __init__(self, in_features, out_features):
-        super(SemiLinear, self).__init__()
+        super(nn.Linear, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
         self.weight = nn.Parameter(th.Tensor(1, out_features, in_features))
@@ -107,10 +107,10 @@ class ViTBlock(nn.Module):
         self.msa = nn.MultiheadAttention(embed_dim, num_heads, dropout=dropout)
         self.layernorm2 = nn.LayerNorm(embed_dim)
         self.mlp = nn.Sequential(
-            SemiLinear(embed_dim, mlp_dim),
+            nn.Linear(embed_dim, mlp_dim),
             OptAEGV3(),
             nn.Dropout(dropout),
-            SemiLinear(mlp_dim, embed_dim),
+            nn.Linear(mlp_dim, embed_dim),
             nn.Dropout(dropout)
         )
 
@@ -130,7 +130,7 @@ class ViT(nn.Module):
         # Patch embedding
         self.patch_size = patch_size
         num_patches = (image_size // patch_size) ** 2
-        self.patch_embed = SemiLinear(patch_size * patch_size * 3, embed_dim)
+        self.patch_embed = nn.Linear(patch_size * patch_size * 3, embed_dim)
 
         # Class token and position embeddings
         self.cls_token = nn.Parameter(th.randn(1, 1, embed_dim))
@@ -147,9 +147,9 @@ class ViT(nn.Module):
 
         # Regression head
         self.regression_head = nn.Sequential(
-            SemiLinear(embed_dim, embed_dim * 2),
+            nn.Linear(embed_dim, embed_dim * 2),
             OptAEGV3(),
-            SemiLinear(embed_dim * 2, num_outputs)
+            nn.Linear(embed_dim * 2, num_outputs)
         )
 
     def forward(self, x):
