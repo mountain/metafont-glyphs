@@ -2,6 +2,7 @@ import torch as th
 import torch.nn as nn
 import lightning as ltn
 import data.dataset as ds
+import torch.nn.functional as F
 
 from torch.utils.data import DataLoader
 from util.stroke import IX, IY
@@ -36,6 +37,7 @@ class AbstractG2MNet(ltn.LightningModule):
         return [optimizer], [scheduler]
 
     def loss(self, logits, labels):
+        labels = F.one_hot(labels, num_classes=len(ds.VOCAB2ID)).float()
         loss = self.celoss(logits, labels)
         return loss
 
