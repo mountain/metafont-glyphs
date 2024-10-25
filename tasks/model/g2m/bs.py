@@ -186,7 +186,9 @@ class Baseline(AbstractG2MNet):
         xslice = IX.to(glyph.device) * th.ones_like(glyph)
         yslice = IY.to(glyph.device) * th.ones_like(glyph)
         data = th.cat([glyph, xslice, yslice], dim=1)
+
         conditional = self.encoder(data)
+        conditional = conditional.unsqueeze(1)
 
         strokes = th.zeros(glyph.size(0), 80, dtype=th.long).to(glyph.device)
         strokes[:, 0] = ds.VOCAB2ID[ds.STARTER]
