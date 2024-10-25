@@ -60,6 +60,7 @@ class SemiLinear(nn.Module):
         nn.init.kaiming_normal_(self.weight)
 
     def forward(self, input):
+        print(input.shape)
         expanded_weight = self.weight.expand(input.size(0), -1, -1)  # (batch_size, out_features, in_features)
         reshaped_input = input.view(input.size(0), input.size(1), -1)  # (batch_size, in_features, 1)
         print(expanded_weight.shape)
