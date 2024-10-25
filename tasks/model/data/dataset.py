@@ -68,7 +68,8 @@ class VocabDataset(Dataset):
         ids = np.zeros([leng+1], dtype=np.int64)
         ids[0] = VOCAB2ID[STARTER]
         for i in range(len(vectors)):
-            ids[i+1] = VOCAB2ID[vectors[i]]
+            val = round(float(vectors[i]), 4)
+            ids[i+1] = VOCAB2ID[val]
 
         if leng < maxlen:
             aligned = np.pad(ids, (0, maxlen - leng), 'constant', constant_values=VOCAB2ID[STARTER])
