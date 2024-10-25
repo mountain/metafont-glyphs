@@ -38,8 +38,8 @@ class AbstractG2MNet(ltn.LightningModule):
 
     def loss(self, logits, labels):
         num_classes = len(ds.VOCAB2ID)
-        labels = F.one_hot(labels, num_classes=num_classes).float()
-        loss = self.celoss(logits.view(-1, num_classes), labels.view(-1, num_classes))
+        #labels = F.one_hot(labels, num_classes=num_classes).float()
+        loss = self.celoss(logits.view(-1, num_classes), labels.view(-1))
         return loss
 
     def training_step(self, train_batch, batch_idx):
