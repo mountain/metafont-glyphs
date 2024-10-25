@@ -7,32 +7,17 @@ from torch.utils.data import DataLoader
 from util.stroke import IX, IY
 
 
-def collate_fn(batch):
-    # Assuming batch is a list of tuples (glyphs, labels)
-    glyphs, labels = zip(*batch)
-
-    # Pad labels to the maximum length
-    max_len = max(len(label) for label in labels)
-    padded_labels = [label + [ds.VOCAB2ID[ds.STARTER]] * (max_len - len(label)) for label in labels]
-
-    # Convert to tensors
-    glyphs = th.stack(glyphs)
-    labels = th.tensor(padded_labels)
-
-    return glyphs, labels
-
-
 dltrain = DataLoader(
     ds.VocabDataset("../../data/dataset/train.parquet"),
-    batch_size=32, num_workers=2, shuffle=True, persistent_workers=True, drop_last=True, collate_fn=collate_fn
+    batch_size=32, num_workers=2, shuffle=True, persistent_workers=True
 )
 dlvalid = DataLoader(
     ds.VocabDataset("../../data/dataset/validation.parquet"),
-    batch_size=32, num_workers=2, shuffle=False, persistent_workers=True, drop_last=True, collate_fn=collate_fn
+    batch_size=32, num_workers=2, shuffle=False, persistent_workers=True
 )
 dltest = DataLoader(
     ds.VocabDataset("../../data/dataset/test.parquet"),
-    batch_size=32, num_workers=2, shuffle=False, persistent_workers=True, drop_last=True, collate_fn=collate_fn
+    batch_size=32, num_workers=2, shuffle=False, persistent_workers=True
 )
 
 
