@@ -64,7 +64,7 @@ class VocabDataset(Dataset):
         vectors = np.array(list(self.table['vectors'][index]), dtype=np.float32)
 
         leng = vectors.shape[0]
-        ids = np.zeros([leng + 1], dtype=np.int64)
+        ids = np.zeros([leng], dtype=np.int64)
         for i in range(len(vectors)):
             val = round(float(vectors[i]), 4)
             ids[i] = VOCAB2ID[val]
