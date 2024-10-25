@@ -129,9 +129,9 @@ class AEGModel(AbstractG2MNet):
 
         # Regression head
         self.regression_head = nn.Sequential(
-            nn.Linear(128 * 2, 128 * 4),
+            nn.Linear(128 * 3, 128 * 6),
             OptAEGV3(),
-            nn.Linear(128 * 4, 80)
+            nn.Linear(128 * 6, 80)
         )
 
     def forward(self, glyph):
