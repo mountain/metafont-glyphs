@@ -121,7 +121,10 @@ class AEGModel(AbstractG2MNet):
             image_size=96, patch_size=16, num_layers=4, num_heads=16, embed_dim=128, mlp_dim=512, num_outputs=80
         )
         self.vit32 = ViT(
-            image_size=96, patch_size=16, num_layers=4, num_heads=16, embed_dim=128, mlp_dim=512, num_outputs=80
+            image_size=96, patch_size=32, num_layers=4, num_heads=16, embed_dim=128, mlp_dim=512, num_outputs=80
+        )
+        self.vit48 = ViT(
+            image_size=96, patch_size=48, num_layers=4, num_heads=16, embed_dim=128, mlp_dim=512, num_outputs=80
         )
 
         # Regression head
@@ -135,7 +138,7 @@ class AEGModel(AbstractG2MNet):
         xslice = IX.to(glyph.device) * th.ones_like(glyph)
         yslice = IY.to(glyph.device) * th.ones_like(glyph)
         data = th.cat([glyph, xslice, yslice], dim=1)
-        data = th.cat([self.vit16(data), self.vit32(data)], dim=1)
+        data = th.cat([self.vit16(data), self.vit32(data), self.vit48(data)], dim=1)
         return self.regression_head(data)
 
 _model_ = AEGModel
