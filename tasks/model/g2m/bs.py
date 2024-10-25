@@ -36,7 +36,7 @@ class AbstractG2MNet(ltn.LightningModule):
         return [optimizer], [scheduler]
 
     def loss(self, logits, labels):
-        loss = self.celoss(logits, labels.view(-1))
+        loss = self.celoss(logits, labels)
         return loss
 
     def training_step(self, train_batch, batch_idx):
