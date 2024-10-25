@@ -60,14 +60,14 @@ class SemiLinear(nn.Module):
         nn.init.kaiming_normal_(self.weight)
 
     def forward(self, input):
-        print(input.shape)
+        shape = input.shape
+        input = input.view(-1, shape[-1])
         expanded_weight = self.weight.expand(input.size(0), -1, -1)  # (batch_size, out_features, in_features)
         reshaped_input = input.view(input.size(0), input.size(1), -1)  # (batch_size, in_features, 1)
-        print(expanded_weight.shape)
-        print(reshaped_input.shape)
         aeg_result = batch_aeg_product_optimized(expanded_weight, reshaped_input)  # (batch_size, out_features, 1)
         aeg_result = aeg_result.squeeze(2)  # (batch_size, out_features)
-        return th.sigmoid(aeg_result) * self.proj(input)
+        result = th.sigmoid(aeg_result) * self.proj(input)
+        return result.view(*shape[:-1], -1)
 
 
 class OptAEGV3(nn.Module):
