@@ -37,8 +37,9 @@ class AbstractG2MNet(ltn.LightningModule):
         return [optimizer], [scheduler]
 
     def loss(self, logits, labels):
-        labels = F.one_hot(labels, num_classes=len(ds.VOCAB2ID)).float()
-        loss = self.celoss(logits, labels)
+        num_classes = len(ds.VOCAB2ID)
+        labels = F.one_hot(labels, num_classes=num_classes).float()
+        loss = self.celoss(logits.view(-1, num_classes), labels.view(-1, num_classes))
         return loss
 
     def training_step(self, train_batch, batch_idx):
@@ -198,13 +199,13 @@ class Baseline(AbstractG2MNet):
 
         # 如果是训练阶段，使用真实的 labels
         if labels is not None:
-            for i in range(79):
+            for i in range(80):
                 output = self.decoder(tgt, conditional) # 获取当前时间步的输出 logits
                 outputs.append(output)
                 tgt = labels[:, i].unsqueeze(1)  # 使用真实的笔画作为输入
         # 如果是推理阶段，使用预测的笔画
         else:
-            for i in range(79):
+            for i in range(80):
                 output = self.decoder(tgt, conditional) # 获取当前时间步的输出 logits
                 outputs.append(output)
                 tgt = th.argmax(output, dim=-1)  # 使用预测的笔画作为输入
