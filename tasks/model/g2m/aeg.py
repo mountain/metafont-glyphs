@@ -117,28 +117,31 @@ class AEGModel(AbstractG2MNet):
     def __init__(self):
         super().__init__()
         self.model_name = 'aeg'
+        self.vit08 = ViT(
+            image_size=96, patch_size=8, num_layers=3, num_heads=16, embed_dim=128, mlp_dim=512, num_outputs=80
+        )
         self.vit16 = ViT(
-            image_size=96, patch_size=16, num_layers=4, num_heads=16, embed_dim=128, mlp_dim=512, num_outputs=80
+            image_size=96, patch_size=16, num_layers=3, num_heads=16, embed_dim=128, mlp_dim=512, num_outputs=80
         )
         self.vit32 = ViT(
-            image_size=96, patch_size=32, num_layers=4, num_heads=16, embed_dim=128, mlp_dim=512, num_outputs=80
+            image_size=96, patch_size=32, num_layers=3, num_heads=16, embed_dim=128, mlp_dim=512, num_outputs=80
         )
         self.vit48 = ViT(
-            image_size=96, patch_size=48, num_layers=4, num_heads=16, embed_dim=128, mlp_dim=512, num_outputs=80
+            image_size=96, patch_size=48, num_layers=3, num_heads=16, embed_dim=128, mlp_dim=512, num_outputs=80
         )
 
         # Regression head
         self.regression_head = nn.Sequential(
-            nn.Linear(128 * 3, 128 * 6),
+            nn.Linear(128 * 4, 128 * 8),
             OptAEGV3(),
-            nn.Linear(128 * 6, 80)
+            nn.Linear(128 * 8, 80)
         )
 
     def forward(self, glyph):
         xslice = IX.to(glyph.device) * th.ones_like(glyph)
         yslice = IY.to(glyph.device) * th.ones_like(glyph)
         data = th.cat([glyph, xslice, yslice], dim=1)
-        data = th.cat([self.vit16(data), self.vit32(data), self.vit48(data)], dim=1)
+        data = th.cat([self.vit08(data), self.vit16(data), self.vit32(data), self.vit48(data)], dim=1)
         return self.regression_head(data)
 
 _model_ = AEGModel
