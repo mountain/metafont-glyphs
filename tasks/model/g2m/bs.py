@@ -10,15 +10,15 @@ from util.stroke import IX, IY
 
 dltrain = DataLoader(
     ds.VocabDataset("../../data/dataset/train.parquet"),
-    batch_size=32, num_workers=2, shuffle=True, persistent_workers=True
+    batch_size=256, num_workers=16, shuffle=True, persistent_workers=True
 )
 dlvalid = DataLoader(
     ds.VocabDataset("../../data/dataset/validation.parquet"),
-    batch_size=32, num_workers=2, shuffle=False, persistent_workers=True
+    batch_size=32, num_workers=8, shuffle=False, persistent_workers=True
 )
 dltest = DataLoader(
     ds.VocabDataset("../../data/dataset/test.parquet"),
-    batch_size=32, num_workers=2, shuffle=False, persistent_workers=True
+    batch_size=32, num_workers=8, shuffle=False, persistent_workers=True
 )
 
 
@@ -177,18 +177,12 @@ class Baseline(AbstractG2MNet):
     def __init__(self):
         super().__init__()
         self.model_name = 'bs'
-        self.vit32 = ViT(
-            image_size=96, patch_size=32, num_layers=6, num_heads=16, embed_dim=128, mlp_dim=256
-        )
-        self.vit16 = ViT(
-            image_size=96, patch_size=16, num_layers=6, num_heads=16, embed_dim=128, mlp_dim=256
-        )
         self.vit08 = ViT(
             image_size=96, patch_size=8, num_layers=6, num_heads=16, embed_dim=128, mlp_dim=256
         )
         self.decoder = ConditionalTransformerDecoder(
             vocab_size=len(ds.VOCAB2ID),
-            d_model=3 * 128, num_heads=16, num_decoder_layers=6, dim_feedforward=256, max_seq_length=80
+            d_model=128, num_heads=16, num_decoder_layers=6, dim_feedforward=256, max_seq_length=80
         )
 
     def forward(self, glyph, labels=None):
@@ -196,7 +190,7 @@ class Baseline(AbstractG2MNet):
         yslice = IY.to(glyph.device) * th.ones_like(glyph)
         data = th.cat([glyph, xslice, yslice], dim=1)
 
-        data = th.cat((self.vit32(data), self.vit16(data), self.vit08(data)), dim=1)
+        data = self.vit08(data)
         conditional = data.unsqueeze(1)
 
         outputs = [] # 用于存储每个时间步的输出 logits
